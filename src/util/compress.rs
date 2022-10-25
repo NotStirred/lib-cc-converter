@@ -1,8 +1,9 @@
 use byteorder::{BigEndian, WriteBytesExt};
-use flate2::bufread::GzDecoder;
+use flate2::bufread::{GzDecoder, ZlibDecoder};
+use quartz_nbt::io::Flavor::GzCompressed;
 use quartz_nbt::io::{Flavor, NbtIoError};
 use quartz_nbt::NbtCompound;
-use std::io::BufReader;
+use Flavor::Uncompressed;
 
 pub fn read_compressed(data: &[u8]) -> Result<NbtCompound, NbtIoError> {
     let format = data[0];
@@ -13,18 +14,24 @@ pub fn read_compressed(data: &[u8]) -> Result<NbtCompound, NbtIoError> {
         ));
     }
 
-    Ok(match format {
-        1 => quartz_nbt::io::read_nbt(&mut GzDecoder::new(data), Flavor::Uncompressed),
-        2 => quartz_nbt::io::read_nbt(&mut BufReader::new(data), Flavor::ZlibCompressed),
+    let (compound, _) = match format {
+        1 => quartz_nbt::io::read_nbt(&mut GzDecoder::new(data), Uncompressed),
+        2 => quartz_nbt::io::read_nbt(&mut ZlibDecoder::new(data), Uncompressed),
         _ => {
-            panic!("Unrecognised format {}", format)
+            return Err(NbtIoError::Custom(
+                format!(
+                    "Unrecognised compression format {}. (Valid options are: 1, 2)",
+                    format
+                )
+                .into_boxed_str(),
+            ));
         }
-    }?
-    .0)
+    }?;
+    Ok(compound)
 }
 
-pub fn read_compressed_cc(reader: BufReader<&[u8]>) -> Result<NbtCompound, NbtIoError> {
-    Ok(quartz_nbt::io::read_nbt(&mut GzDecoder::new(reader), Flavor::Uncompressed)?.0)
+pub fn read_compressed_cc(data: &[u8]) -> Result<NbtCompound, NbtIoError> {
+    Ok(quartz_nbt::io::read_nbt(&mut GzDecoder::new(data), Uncompressed)?.0)
 }
 
 pub fn write_compressed(tag: &NbtCompound, prefix_format: bool) -> Result<Vec<u8>, NbtIoError> {
@@ -33,6 +40,11 @@ pub fn write_compressed(tag: &NbtCompound, prefix_format: bool) -> Result<Vec<u8
     if prefix_format {
         data.write_i32::<BigEndian>(1)?;
     }
-    quartz_nbt::io::write_nbt(&mut data, Some(""), tag, Flavor::GzCompressed)?;
+    quartz_nbt::io::write_nbt(
+        &mut std::io::Cursor::new(&mut data),
+        None,
+        tag,
+        GzCompressed,
+    )?;
     Ok(data)
 }
