@@ -43,6 +43,10 @@ impl CoordinateSpace for RegionSpace3d {}
 pub type RegionPos3d = Vec3i<RegionSpace3d>;
 
 impl RegionPos3d {
+    pub const DIAMETER_IN_CUBES: usize = 16;
+    pub const CUBES_COUNT: usize =
+        Self::DIAMETER_IN_CUBES * Self::DIAMETER_IN_CUBES * Self::DIAMETER_IN_CUBES;
+
     pub fn to_block_pos(self) -> BlockPos {
         BlockPos::new(self.x << 8, self.y << 8, self.z << 8)
     }
@@ -63,6 +67,10 @@ impl RegionPos3d {
             (self.y << 4) + local_y,
             (self.z << 4) + local_z,
         )
+    }
+
+    pub fn region_key(&self) -> RegionKey {
+        format!("{}.{}.{}.3dr", self.x, self.y, self.z)
     }
 }
 
