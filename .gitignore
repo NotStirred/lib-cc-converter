@@ -2,3 +2,6 @@
 /.vscode
 /.idea
 /Cargo.lock
+
+# ignore test resources
+/resources/test/*/out

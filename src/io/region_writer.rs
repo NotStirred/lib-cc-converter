@@ -2,6 +2,7 @@ use crate::convert::entry_location::Key;
 use crate::io::write_region::{RegionWriteError, WriteRegion};
 use crate::EntryLocation3d;
 use std::collections::HashMap;
+use std::fs;
 use std::hash::Hash;
 use std::marker::PhantomData;
 use std::path::{Path, PathBuf};
@@ -16,14 +17,19 @@ pub struct CachingRegionWriter<K: Key<R>, R: Eq + Hash> {
 }
 
 impl<K: Key<R> + Copy, R: Eq + Hash> CachingRegionWriter<K, R> {
-    pub fn new(path: &Path, sector_size: usize, max_cache_size: usize) -> Self {
-        Self {
+    pub fn new(
+        path: &Path,
+        sector_size: usize,
+        max_cache_size: usize,
+    ) -> Result<Self, std::io::Error> {
+        fs::create_dir(path)?;
+        Ok(Self {
             sector_size,
             max_cache_size,
             path: path.to_path_buf(),
             region_cache: HashMap::new(),
             _phantom: PhantomData::default(),
-        }
+        })
     }
 
     pub fn write(&mut self, entry_location: K, data: &[u8]) -> Result<(), RegionWriteError> {
