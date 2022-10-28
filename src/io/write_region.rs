@@ -8,6 +8,7 @@ use std::io::{BufWriter, ErrorKind, Write};
 use std::marker::PhantomData;
 use std::path::{Path, PathBuf};
 
+#[derive(Debug)]
 pub enum RegionWriteError {
     MissingHeader(PathBuf),
     StdIo(std::io::Error),
@@ -16,19 +17,6 @@ pub enum RegionWriteError {
 impl From<std::io::Error> for RegionWriteError {
     fn from(err: std::io::Error) -> Self {
         RegionWriteError::StdIo(err)
-    }
-}
-
-impl Debug for RegionWriteError {
-    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        match self {
-            RegionWriteError::StdIo(err) => {
-                f.write_str(&*format!("Error when reading region: {}", err))
-            }
-            RegionWriteError::MissingHeader(path) => {
-                f.write_str(&*format!("Missing header in region {:?}", path))
-            }
-        }
     }
 }
 
@@ -45,16 +33,17 @@ impl Display for RegionWriteError {
     }
 }
 
-pub struct WriteRegion<K: Key> {
+pub struct WriteRegion<K: Key<R>, R> {
     sector_size: usize,
     entries_per_region: usize,
     path: PathBuf,
     write_entries: Option<Vec<Option<Vec<u8>>>>,
 
-    _phantom: PhantomData<K>,
+    _phantom_k: PhantomData<K>,
+    _phantom_r: PhantomData<R>,
 }
 
-impl<K: Key> WriteRegion<K> {
+impl<K: Key<R>, R> WriteRegion<K, R> {
     pub const SIZE_BITS: u32 = 8;
     pub const SIZE_MASK: u32 = (1 << Self::SIZE_BITS) - 1;
 
@@ -64,7 +53,8 @@ impl<K: Key> WriteRegion<K> {
             entries_per_region,
             path: path.to_path_buf(),
             write_entries: None,
-            _phantom: PhantomData::default(),
+            _phantom_k: PhantomData::default(),
+            _phantom_r: PhantomData::default(),
         }
     }
 

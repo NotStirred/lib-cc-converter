@@ -5,7 +5,8 @@ use crate::util::vec::CoordinateSpace;
 
 pub type RegionKey = String;
 
-pub trait Key {
+pub trait Key<R> {
+    fn to_region_pos(self) -> R;
     fn region_key(&self) -> RegionKey;
     fn id(&self) -> usize;
 }
@@ -19,17 +20,17 @@ impl EntryLocation3d {
     const LOC_BITMASK: usize = (1 << Self::LOC_BITS) - 1;
     pub const ENTRIES_PER_REGION: usize =
         (1 << Self::LOC_BITS) * (1 << Self::LOC_BITS) * (1 << Self::LOC_BITS);
+}
 
-    pub(crate) fn to_region_pos(self) -> RegionPos3d {
+impl Key<RegionPos3d> for EntryLocation3d {
+    fn to_region_pos(self) -> RegionPos3d {
         RegionPos3d::new(
             self.x >> Self::LOC_BITS,
             self.y >> Self::LOC_BITS,
             self.z >> Self::LOC_BITS,
         )
     }
-}
 
-impl Key for EntryLocation3d {
     fn region_key(&self) -> RegionKey {
         let reg_x = self.x >> Self::LOC_BITS;
         let reg_y = self.y >> Self::LOC_BITS;
@@ -55,7 +56,11 @@ impl EntryLocation2d {
     const ENTRIES_PER_REGION: usize = (1 << Self::LOC_BITS) * (1 << Self::LOC_BITS);
 }
 
-impl Key for EntryLocation2d {
+impl Key<RegionPos2d> for EntryLocation2d {
+    fn to_region_pos(self) -> RegionPos2d {
+        RegionPos2d::new(self.x >> Self::LOC_BITS, self.z >> Self::LOC_BITS)
+    }
+
     fn region_key(&self) -> RegionKey {
         format!("{}.{}.2dr", self.x, self.z)
     }
@@ -97,7 +102,11 @@ impl RegionPos2d {
     }
 }
 
-impl Key for MinecraftChunkLocation {
+impl Key<RegionPos2d> for MinecraftChunkLocation {
+    fn to_region_pos(self) -> RegionPos2d {
+        RegionPos2d::new(self.x >> Self::LOC_BITS, self.z >> Self::LOC_BITS)
+    }
+
     fn region_key(&self) -> RegionKey {
         format!("r.{}.{}.mca", self.x, self.z)
     }
