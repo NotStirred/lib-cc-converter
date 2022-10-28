@@ -349,6 +349,10 @@ impl Anvil2CCConverter {
          *   |- LastHeightMap
          */
         let mut tags = HashMap::new();
+        let data_version = match src_root.get::<_, &NbtTag>("DataVersion") {
+            Ok(version) => Some(version.clone()),
+            Err(_) => None,
+        };
         let src_level = src_root.get::<_, &NbtCompound>("Level")?;
 
         let x = src_level.get::<_, i32>("xPos")?;
@@ -364,7 +368,7 @@ impl Anvil2CCConverter {
             let src_section: &NbtCompound = src_section.try_into()?;
             let mut root = NbtCompound::new();
             {
-                if let Ok(data_version) = src_root.get::<_, &NbtTag>("DataVersion") {
+                if let Some(data_version) = &data_version {
                     root.insert("DataVersion", data_version.clone());
                 }
 
@@ -469,7 +473,7 @@ impl Anvil2CCConverter {
             if let Some(te_id) = te_id {
                 te_map.entry(i).or_insert_with(|| {
                     let mut tag = NbtCompound::new();
-                    tag.insert("id", String((te_id).to_string()));
+                    tag.insert("id", String(te_id.to_string()));
                     tag.insert("x", Int(cube_x * 16 + x));
                     tag.insert("y", Int(cube_y * 16 + y));
                     tag.insert("z", Int(cube_z * 16 + z));
