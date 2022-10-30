@@ -1,0 +1,19 @@
+[package]
+name = "dfu-schema-define"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+proc-macro = true
+
+[dev-dependencies]
+trybuild = { version = "1.0", features = ["diff"] }
+
+[dependencies]
+syn = { version = "1.0", features = ["extra-traits"] }
+quote = "1.0.21"
+dfu-structures = { path = "../dfu-structures" }
+proc-macro2 = "1.0.47"
+lazy_static = "1.4.0"
+
+quartz_nbt = { version = "0.2.5" }
