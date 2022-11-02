@@ -2,7 +2,7 @@ use quartz_nbt::{Map, NbtCompound, NbtTag};
 use std::collections::{HashMap};
 use std::string::ToString;
 
-type TypeName = String;
+pub type TypeName = String;
 
 #[derive(Clone)]
 pub enum PrimitiveType {
@@ -53,6 +53,8 @@ pub enum TypeData {
 	TaggedChoiceCompound {key_name: String, key_type: PrimitiveType, types: Map<Type>},
 	/// Represents a sum type of multiple types
 	Sum(Vec<Type>),
+	/// Represents a product type (union) of multiple types. We currently handle this the same as sum types, but that might break in some cases?
+	Product(Vec<Type>),
 	/// Represents a reference to a type defined in the Schema
 	Reference(TypeName),
 	/// Used to represent data that is passed through unmodified
@@ -84,6 +86,10 @@ pub fn or(types: impl Into<Vec<Type>>) -> Type {
 	Type::new(TypeData::Sum(types.into()))
 }
 
+pub fn and(types: impl Into<Vec<Type>>) -> Type {
+	Type::new(TypeData::Product(types.into()))
+}
+
 pub fn reference(name: impl Into<String>) -> Type {
 	Type::new(TypeData::Reference(name.into()))
 }
@@ -104,44 +110,45 @@ pub fn tagged_choice_compound(key_name: impl Into<String>, key_type: PrimitiveTy
 	})
 }
 
-struct Schema {
+pub struct Schema {
 	pub types: HashMap<TypeName, Type>
 }
 
-trait Fixer {
-	fn apply(tag: &mut NbtTag);
-}
-
 macro_rules! map {
-	( $( $name:literal : $t:expr ),* ) => { Map::from([ $(($name.to_string(), $t)),* ]) }
+	( $( $name:literal : $t:expr ),* ) => { Map::from([ $(($name.to_string(), $t)),* ]) };
+	( $( $name:ident : $t:expr ),* ) => { Map::from([ $(($name.to_string(), $t)),* ]) }
 }
 
-const LEVEL: &str = "level";
-const PLAYER: &str = "player";
-const CHUNK: &str = "chunk";
-const HOTBAR: &str = "hotbar";
-const OPTIONS: &str = "options";
-const STRUCTURE: &str = "structure";
-const STATS: &str = "stats";
-const SAVED_DATA: &str = "saved_data";
-const ADVANCEMENTS: &str = "advancements";
-const POI_CHUNK: &str = "poi_chunk";
-const ENTITY_CHUNK: &str = "entity_chunk";
-const BLOCK_ENTITY: &str = "block_entity";
-const ITEM_STACK: &str = "item_stack";
-const BLOCK_STATE: &str = "block_state";
-const ENTITY_NAME: &str = "entity_name";
-const ENTITY_TREE: &str = "entity_tree";
-const ENTITY: &str = "entity";
-const BLOCK_NAME: &str = "block_name";
-const ITEM_NAME: &str = "item_name";
-const UNTAGGED_SPAWNER: &str = "untagged_spawner";
-const STRUCTURE_FEATURE: &str = "structure_feature";
-const OBJECTIVE: &str = "objective";
-const TEAM: &str = "team";
-const RECIPE: &str = "recipe";
-const BIOME: &str = "biome";
-const WORLD_GEN_SETTINGS: &str = "world_gen_settings";
+pub mod type_names {
+	pub const LEVEL: &str = "level";
+	pub const PLAYER: &str = "player";
+	pub const CHUNK: &str = "chunk";
+	pub const HOTBAR: &str = "hotbar";
+	pub const OPTIONS: &str = "options";
+	pub const STRUCTURE: &str = "structure";
+	pub const STATS: &str = "stats";
+	pub const SAVED_DATA: &str = "saved_data";
+	pub const ADVANCEMENTS: &str = "advancements";
+	pub const POI_CHUNK: &str = "poi_chunk";
+	pub const ENTITY_CHUNK: &str = "entity_chunk";
+	pub const BLOCK_ENTITY: &str = "block_entity";
+	pub const ITEM_STACK: &str = "item_stack";
+	pub const BLOCK_STATE: &str = "block_state";
+	pub const ENTITY_NAME: &str = "entity_name";
+	pub const ENTITY_TREE: &str = "entity_tree";
+	pub const ENTITY: &str = "entity";
+	pub const BLOCK_NAME: &str = "block_name";
+	pub const ITEM_NAME: &str = "item_name";
+	pub const UNTAGGED_SPAWNER: &str = "untagged_spawner";
+	pub const STRUCTURE_FEATURE: &str = "structure_feature";
+	pub const OBJECTIVE: &str = "objective";
+	pub const TEAM: &str = "team";
+	pub const RECIPE: &str = "recipe";
+	pub const BIOME: &str = "biome";
+	pub const WORLD_GEN_SETTINGS: &str = "world_gen_settings";
+}
+
+use type_names::*;
 
 fn test() {
 	use CompoundField::{RequiredField as Req, OptionalField as Opt};
@@ -191,14 +198,14 @@ macro_rules! match_tag {
 	}
 }
 
-struct SearchOptions<'a> {
+pub struct SearchOptions<'a> {
 	pub schema: &'a Schema,
 	pub target_field_name: Option<&'a str>,
 	pub target_type_name: &'a str,
 	pub recurse_into_target: bool
 }
 
-type ModifyOp = fn(&mut NbtTag);
+pub type ModifyOp = fn(&mut NbtTag);
 
 fn matches_type(_target_type: &Type, tag: &NbtTag) -> bool {
 	// TODO are there any cases where we have to match things other than compound tags?
@@ -208,7 +215,7 @@ fn matches_type(_target_type: &Type, tag: &NbtTag) -> bool {
 	}
 }
 
-fn search(options: &SearchOptions, root: &Type, current_field_name: &str, tag: &mut NbtTag, transform: ModifyOp) -> () {
+pub fn search(options: &SearchOptions, root: &Type, current_field_name: &str, tag: &mut NbtTag, transform: ModifyOp) -> () {
 	// println!("search current_field_name: {}\n current tag: {:?}", current_field_name, tag);
 
 	let matches = {
@@ -249,7 +256,8 @@ fn search(options: &SearchOptions, root: &Type, current_field_name: &str, tag: &
 				search(options, choice_type, current_field_name, tag, transform);
 			})
 			}
-			TypeData::Sum(types) => {
+			// TODO is it safe to handle these both the same?
+			TypeData::Sum(types) | TypeData::Product(types) => {
 				types.iter().for_each(|t| search(options, t, current_field_name, tag, transform));
 			}
 			TypeData::Reference(type_name) => {
@@ -277,7 +285,7 @@ macro_rules! s {
     ($s:expr) => { $s.to_string() }
 }
 
-fn onFindTag(tag: &mut NbtTag) {
+fn on_find_tag(tag: &mut NbtTag) {
 	println!("Found tag:\n {:?}", tag);
 }
 
@@ -330,5 +338,5 @@ fn test_search() {
 		recurse_into_target: true
 	};
 
-	search(&search_options, &schema.types.get(CHUNK).unwrap(), "", &mut NbtTag::Compound(test_tag), onFindTag)
+	search(&search_options, &schema.types.get(CHUNK).unwrap(), "", &mut NbtTag::Compound(test_tag), on_find_tag)
 }
