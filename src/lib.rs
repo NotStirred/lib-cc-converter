@@ -1,3 +1,5 @@
+#![feature(fn_traits)]
+
 use crate::convert::anvil2cc::Anvil2CCConverter;
 use crate::convert::data::anvil_chunk_data::AnvilChunkData;
 
@@ -9,8 +11,9 @@ use crate::util::test_utils;
 
 pub mod convert;
 pub mod io;
-pub mod tasks;
+//pub mod tasks;
 pub mod util;
+mod cursed;
 
 #[test]
 fn simple_region_test() {
