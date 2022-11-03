@@ -17,19 +17,32 @@ impl Parse for SchemaTree {
         let content;
         braced!(content in input);
 
-        let i: SchemaNode = content.parse()?;
+        let mut nodes = Vec::new();
 
-        Ok(Self { nodes: vec![i] })
+        loop {
+            let node: SchemaNode = content.parse()?;
+            nodes.push(node);
+
+            // if there is a comma, parse another
+            let lookahead = content.lookahead1();
+            if !lookahead.peek(Token![,]) {
+                break;
+            }
+            content.parse::<Token![,]>()?; // consume the comma
+        }
+
+        Ok(Self { nodes })
     }
 }
 
 #[derive(Debug)]
 enum SchemaNode {
     Register(syn::Ident, Vec<SchemaNode>),
+    All(Vec<SchemaNode>),
     Opt(String, Box<SchemaNode>),
     Req(String, Box<SchemaNode>),
     Reference(syn::Ident),
-    List(syn::Ident),
+    List(Box<SchemaNode>),
 }
 
 impl Parse for SchemaNode {
@@ -59,6 +72,26 @@ impl Parse for SchemaNode {
 
                 Ok(SchemaNode::Register(registry, nodes))
             }
+            "all" => {
+                let content;
+                parenthesized!(content in input);
+
+                let mut nodes = Vec::new();
+                loop {
+                    // parse a schema node
+                    let node: SchemaNode = content.parse()?;
+                    nodes.push(node);
+
+                    // if there is a comma, parse another
+                    let lookahead = content.lookahead1();
+                    if !lookahead.peek(Token![,]) {
+                        break;
+                    }
+                    content.parse::<Token![,]>()?; // consume the comma
+                }
+
+                Ok(SchemaNode::All(nodes))
+            }
             "req" => {
                 let content;
                 parenthesized!(content in input);
@@ -81,7 +114,7 @@ impl Parse for SchemaNode {
                     Err(syn::Error::new(val.span(), "expected string literal"))
                 }
             }
-            "reference" => {
+            "refer" | "reference" => {
                 let content;
                 parenthesized!(content in input);
                 let ident: syn::Ident = content.parse()?;
@@ -90,8 +123,8 @@ impl Parse for SchemaNode {
             "list" => {
                 let content;
                 parenthesized!(content in input);
-                let ident: syn::Ident = content.parse()?;
-                Ok(SchemaNode::List(ident))
+                let node: SchemaNode = content.parse()?;
+                Ok(SchemaNode::List(Box::new(node)))
             }
             _ => Err(syn::Error::new(ident.span(), "unknown identifier")),
         }
@@ -117,30 +150,45 @@ impl Parse for SchemaDefinition {
 pub fn define_schema(input: TokenStream) -> TokenStream {
     let SchemaDefinition { info, def } = parse_macro_input!(input as SchemaDefinition);
 
-    generate_output(info, &def.nodes[0]).into()
+    let mut nodes_tokens = proc_macro2::TokenStream::new();
+    for node in &def.nodes {
+        let inner = generate_output(&info, node);
+        nodes_tokens.extend(inner);
+    }
+
+    nodes_tokens.into()
 }
 
-fn generate_output(info: syn::Ident, node: &SchemaNode) -> proc_macro2::TokenStream {
+fn generate_output(info: &syn::Ident, node: &SchemaNode) -> proc_macro2::TokenStream {
     match node {
         SchemaNode::Register(ident, nodes) => {
             let mut nodes_tokens = proc_macro2::TokenStream::new();
             for node in nodes {
-                let inner = generate_output(info.clone(), node);
+                let inner = generate_output(info, node);
                 nodes_tokens.extend(inner);
             }
 
             quote! {
                 #info.references.#ident.insert(#info.from_version,
-                    std::boxed::Box::leak(std::boxed::Box::new(|data: &mut quartz_nbt::Map<quartz_nbt::NbtTag>, from, to|{
+                    std::boxed::Box::leak(std::boxed::Box::new(|value: &mut quartz_nbt::NbtTag, from, to|{
                         #nodes_tokens
                         Ok(())
                     })));
             }
         }
+        SchemaNode::All(nodes) => {
+            let mut nodes_tokens = proc_macro2::TokenStream::new();
+            for node in nodes {
+                let inner = generate_output(info, node);
+                nodes_tokens.extend(inner);
+            }
+            nodes_tokens
+        }
         SchemaNode::Opt(val, node) => {
             let inner = generate_output(info, node);
             quote! {
-                if let std::option::Option::Some(value) = data.get_mut(#val) {
+                let opt_value: &mut quartz_nbt::NbtCompound = value.try_into()?;
+                if let std::option::Option::Some(value) = opt_value.inner_mut().get_mut(#val) {
                     #inner
                 }
             }
@@ -148,20 +196,24 @@ fn generate_output(info: syn::Ident, node: &SchemaNode) -> proc_macro2::TokenStr
         SchemaNode::Req(val, node) => {
             let inner = generate_output(info, node);
             quote! {
-                let value = data.get_mut(#val).unwrap();
+                let value: &mut quartz_nbt::NbtCompound = value.try_into()?;
+                let value: &mut quartz_nbt::NbtTag = value.get_mut(#val)?;
                 #inner
             }
         }
         SchemaNode::Reference(ident) => {
             let tokens = quote! {
-                dfu_structures::types::convert(&crate::TYPES.#ident, value, from, to);
+                dfu_structures::types::convert(&crate::TYPES.#ident, <&mut quartz_nbt::NbtCompound>::try_from(value)?, from, to);
             };
             tokens
         }
-        SchemaNode::List(ident) => {
+        SchemaNode::List(node) => {
+            let inner = generate_output(info, node);
             let tokens = quote! {
                 let list: &mut quartz_nbt::NbtList = value.try_into()?;
-                dfu_structures::types::convert_all(&crate::TYPES.#ident, list, from, to);
+                for value in list.iter_mut() {
+                    #inner
+                }
             };
             tokens
         }

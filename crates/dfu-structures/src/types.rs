@@ -1,10 +1,10 @@
-use quartz_nbt::{Map, NbtList, NbtTag};
+use quartz_nbt::{NbtCompound, NbtTag};
 use std::collections::HashMap;
 use std::error::Error;
 
-pub type ConversionFunc = dyn Fn(&mut Map<NbtTag>, usize, usize) -> Result<(), Box<dyn Error>> + Sync;
+pub type ConversionFunc = dyn Fn(&mut NbtTag, usize, usize) -> Result<(), Box<dyn Error>> + Sync;
 
-pub struct Types<F: Fn(&mut Map<NbtTag>, usize, usize) -> Result<(), Box<dyn Error>> + Sync> {
+pub struct Types<F> {
     pub level: HashMap<usize, F>,
     pub player: HashMap<usize, F>,
     pub chunk: HashMap<usize, F>,
@@ -20,7 +20,6 @@ pub struct Types<F: Fn(&mut Map<NbtTag>, usize, usize) -> Result<(), Box<dyn Err
     pub item_stack: HashMap<usize, F>,
     pub block_state: HashMap<usize, F>,
     pub entity_name: HashMap<usize, F>,
-    pub entity_tree: HashMap<usize, F>,
     pub entity: HashMap<usize, F>,
     pub block_name: HashMap<usize, F>,
     pub item_name: HashMap<usize, F>,
@@ -33,7 +32,7 @@ pub struct Types<F: Fn(&mut Map<NbtTag>, usize, usize) -> Result<(), Box<dyn Err
     pub world_gen_settings: HashMap<usize, F>,
 }
 
-impl<F: Fn(&mut Map<NbtTag>, usize, usize) -> Result<(), Box<dyn Error>> + Sync> Types<F> {
+impl<F> Types<F> {
     pub fn new() -> Self {
         Self {
             level: HashMap::new(),
@@ -51,7 +50,6 @@ impl<F: Fn(&mut Map<NbtTag>, usize, usize) -> Result<(), Box<dyn Error>> + Sync>
             item_stack: HashMap::new(),
             block_state: HashMap::new(),
             entity_name: HashMap::new(),
-            entity_tree: HashMap::new(),
             entity: HashMap::new(),
             block_name: HashMap::new(),
             item_name: HashMap::new(),
@@ -66,17 +64,9 @@ impl<F: Fn(&mut Map<NbtTag>, usize, usize) -> Result<(), Box<dyn Error>> + Sync>
     }
 }
 
-pub fn convert_all<F: Fn(&mut Map<NbtTag>, usize, usize) -> Result<(), Box<dyn Error>>>(
+pub fn convert<F: Fn(&mut NbtTag, usize, usize) -> Result<(), Box<dyn Error>>>(
     _t: &HashMap<usize, F>,
-    _data: &mut NbtList,
-    _from: usize,
-    _to: usize,
-) {
-}
-
-pub fn convert<F: Fn(&mut Map<NbtTag>, usize, usize) -> Result<(), Box<dyn Error>>>(
-    _t: &HashMap<usize, F>,
-    _data: &mut NbtTag,
+    _data: &mut NbtCompound,
     _from: usize,
     _to: usize,
 ) {
