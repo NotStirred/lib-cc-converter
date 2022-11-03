@@ -23,12 +23,8 @@ impl From<std::io::Error> for RegionWriteError {
 impl Display for RegionWriteError {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         match self {
-            RegionWriteError::StdIo(err) => {
-                f.write_str(&*format!("Error when reading region: {}", err))
-            }
-            RegionWriteError::MissingHeader(path) => {
-                f.write_str(&*format!("Missing header in region {:?}", path))
-            }
+            RegionWriteError::StdIo(err) => f.write_str(&*format!("Error when reading region: {}", err)),
+            RegionWriteError::MissingHeader(path) => f.write_str(&*format!("Missing header in region {:?}", path)),
         }
     }
 }
@@ -118,8 +114,7 @@ impl<K: Key<R>, R> WriteRegion<K, R> {
     pub fn flush(&mut self) -> Result<(), std::io::Error> {
         let mut header = Vec::new();
 
-        let mut write_pos =
-            math_util::ceil_div_usize(self.entries_per_region * 4, self.sector_size);
+        let mut write_pos = math_util::ceil_div_usize(self.entries_per_region * 4, self.sector_size);
         if let Some(entries) = &mut self.write_entries {
             for write_entry in entries.iter() {
                 match write_entry {
@@ -128,10 +123,8 @@ impl<K: Key<R>, R> WriteRegion<K, R> {
                         continue;
                     }
                     Some(write_entry) => {
-                        let sector_count =
-                            math_util::ceil_div_usize(write_entry.len(), self.sector_size);
-                        header
-                            .write_i32::<BigEndian>(Self::packed(write_pos, sector_count) as i32)?;
+                        let sector_count = math_util::ceil_div_usize(write_entry.len(), self.sector_size);
+                        header.write_i32::<BigEndian>(Self::packed(write_pos, sector_count) as i32)?;
                         write_pos += sector_count;
                     }
                 }
