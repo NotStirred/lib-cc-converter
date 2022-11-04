@@ -53,6 +53,7 @@ pub(crate) enum SchemaNode {
     Req(String, Box<SchemaNode>),
     Reference(syn::Ident),
     List(Box<SchemaNode>),
+    MapValues(Box<SchemaNode>),
 }
 
 impl Parse for SchemaNode {
@@ -135,6 +136,12 @@ impl Parse for SchemaNode {
                 parenthesized!(content in input);
                 let node: SchemaNode = content.parse()?;
                 Ok(SchemaNode::List(Box::new(node)))
+            }
+            "map_values" => {
+                let content;
+                parenthesized!(content in input);
+                let node: SchemaNode = content.parse()?;
+                Ok(SchemaNode::MapValues(Box::new(node)))
             }
             _ => Err(syn::Error::new(ident.span(), "unknown identifier")),
         }

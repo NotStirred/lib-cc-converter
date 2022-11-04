@@ -13,6 +13,16 @@ pub fn define(info: &mut SchemaInfo) {
                 opt("TileEntitites", list(refer(tile_entity))),
                 opt("TileTicks", list(req("i", refer(block_name))))
             ))
+        },
+        register entity_chunk {
+            opt("Entities", list(refer(entity)))
+        },
+        register saved_data {
+            opt("data", all(
+                opt("Features", map_values(refer(structure_feature))),
+                opt("Objectives", list(refer(objective))),
+                opt("Teams", list(refer(team)))
+            ))
         }
     });
 }

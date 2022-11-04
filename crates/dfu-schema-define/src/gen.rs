@@ -60,5 +60,15 @@ pub(crate) fn generate_output(info: &syn::Ident, node: &SchemaNode) -> proc_macr
             };
             tokens
         }
+        SchemaNode::MapValues(node) => {
+            let inner = generate_output(info, node);
+            let tokens = quote! {
+                let compound: &mut quartz_nbt::NbtCompound = value.try_into()?;
+                for (key, value) in compound.inner_mut().iter_mut() {
+                    #inner
+                }
+            };
+            tokens
+        }
     }
 }
