@@ -70,5 +70,10 @@ pub(crate) fn generate_output(info: &syn::Ident, node: &SchemaNode) -> proc_macr
             };
             tokens
         }
+        SchemaNode::Custom(closure) => {
+            quote! {
+                dfu_structures::call_closure_with(#closure, value, from, to)?;
+            }
+        }
     }
 }

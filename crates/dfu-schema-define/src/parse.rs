@@ -1,6 +1,6 @@
 use syn::parse::{Parse, ParseStream};
 use syn::spanned::Spanned;
-use syn::{braced, parenthesized, ExprLit, Lit, Token};
+use syn::{braced, parenthesized, ExprClosure, ExprLit, Lit, Token};
 
 pub(crate) struct SchemaDefinition {
     pub(crate) info: syn::Ident,
@@ -54,6 +54,7 @@ pub(crate) enum SchemaNode {
     Reference(syn::Ident),
     List(Box<SchemaNode>),
     MapValues(Box<SchemaNode>),
+    Custom(ExprClosure),
 }
 
 impl Parse for SchemaNode {
@@ -142,6 +143,12 @@ impl Parse for SchemaNode {
                 parenthesized!(content in input);
                 let node: SchemaNode = content.parse()?;
                 Ok(SchemaNode::MapValues(Box::new(node)))
+            }
+            "custom" => {
+                let content;
+                parenthesized!(content in input);
+                let closure: ExprClosure = content.parse()?;
+                Ok(SchemaNode::Custom(closure))
             }
             _ => Err(syn::Error::new(ident.span(), "unknown identifier")),
         }
