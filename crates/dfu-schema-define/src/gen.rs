@@ -12,7 +12,7 @@ pub(crate) fn generate_output(info: &syn::Ident, node: &SchemaNode) -> proc_macr
             }
 
             quote! {
-                #info.references.#ident.insert(#info.from_version,
+                #info.references.#ident.insert(#info.version,
                     std::boxed::Box::leak(std::boxed::Box::new(|value: &mut quartz_nbt::NbtTag, from, to|{
                         #nodes_tokens
                         Ok(())

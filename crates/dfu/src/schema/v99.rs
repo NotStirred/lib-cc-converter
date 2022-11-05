@@ -1,7 +1,12 @@
 use dfu_schema_define::define_schema;
+use dfu_structures::types::{ConversionFunc, Types};
 use dfu_structures::SchemaInfo;
 
-pub fn define(info: &mut SchemaInfo) {
+pub fn define(types: &mut Types<&'static ConversionFunc>) {
+    let info = SchemaInfo {
+        version: 99,
+        references: types,
+    };
     define_schema!(info, {
         register player {
             opt("Inventory", list(refer(item_stack))),

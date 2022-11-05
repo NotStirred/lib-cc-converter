@@ -1,3 +1,5 @@
+#![feature(const_for)]
+
 mod schema;
 
 use crate::schema::v99;
@@ -8,13 +10,11 @@ use lazy_static::lazy_static;
 use quartz_nbt::NbtCompound;
 
 fn create_types() -> &'static Types<&'static ConversionFunc> {
-    let mut compound = NbtCompound::new();
-    let map = compound.inner_mut();
-    let mut info = SchemaInfo::new(Types::new(), map, 0, 1);
+    let mut types = Types::new();
 
-    v99::define(&mut info);
+    v99::define(&mut types);
 
-    Box::leak(Box::new(info.references))
+    Box::leak(Box::new(types))
 }
 
 lazy_static! {
