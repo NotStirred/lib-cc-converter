@@ -1,6 +1,5 @@
-use crate::convert::entry_location::Key;
+use crate::convert::entry_location::{EntryLocation3d, Key};
 use crate::io::write_region::{RegionWriteError, WriteRegion};
-use crate::EntryLocation3d;
 use std::collections::HashMap;
 use std::fs;
 use std::hash::Hash;
