@@ -29,7 +29,7 @@ fn simple_region_test() {
 
     let converter = Anvil2CCConverter::new(true);
 
-    let mut writer: CachingRegionWriter<EntryLocation3d, RegionPos3d> =
+    let mut writer: CachingRegionWriter<RegionPos3d> =
         CachingRegionWriter::new(&test_resources_path.join("simple_region_test/out"), 512, 64).expect("Failed to create CubicRegionWriter");
     for x in 0..32 {
         for z in 0..32 {

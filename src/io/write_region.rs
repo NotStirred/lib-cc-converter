@@ -29,17 +29,14 @@ impl Display for RegionWriteError {
     }
 }
 
-pub struct WriteRegion<K: Key<R>, R> {
+pub struct WriteRegion {
     sector_size: usize,
     entries_per_region: usize,
     path: PathBuf,
     write_entries: Option<Vec<Option<Vec<u8>>>>,
-
-    _phantom_k: PhantomData<K>,
-    _phantom_r: PhantomData<R>,
 }
 
-impl<K: Key<R>, R> WriteRegion<K, R> {
+impl WriteRegion {
     pub const SIZE_BITS: u32 = 8;
     pub const SIZE_MASK: u32 = (1 << Self::SIZE_BITS) - 1;
 
@@ -49,12 +46,13 @@ impl<K: Key<R>, R> WriteRegion<K, R> {
             entries_per_region,
             path: path.to_path_buf(),
             write_entries: None,
-            _phantom_k: PhantomData::default(),
-            _phantom_r: PhantomData::default(),
         }
     }
 
-    pub fn write(&mut self, key: K, value: &[u8]) -> Result<(), RegionWriteError> {
+    pub fn write<K, R>(&mut self, key: K, value: &[u8]) -> Result<(), RegionWriteError>
+    where
+        K: Key<R>,
+    {
         if self.write_entries.is_none() {
             self.initialize()?;
         }

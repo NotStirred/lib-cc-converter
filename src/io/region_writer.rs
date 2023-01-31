@@ -4,31 +4,34 @@ use crate::EntryLocation3d;
 use std::collections::HashMap;
 use std::fs;
 use std::hash::Hash;
-use std::marker::PhantomData;
 use std::path::{Path, PathBuf};
 
-pub struct CachingRegionWriter<K: Key<R>, R: Eq + Hash> {
+pub struct CachingRegionWriter<R: Eq + Hash> {
     sector_size: usize,
     max_cache_size: usize,
 
     path: PathBuf,
-    region_cache: HashMap<R, WriteRegion<K, R>>,
-    _phantom: PhantomData<R>,
+    region_cache: HashMap<R, WriteRegion>,
 }
 
-impl<K: Key<R> + Copy, R: Eq + Hash> CachingRegionWriter<K, R> {
+impl<R: Eq + Hash> CachingRegionWriter<R> {
     pub fn new(path: &Path, sector_size: usize, max_cache_size: usize) -> Result<Self, std::io::Error> {
-        fs::create_dir(path)?;
+        match fs::create_dir(path) {
+            Err(err) => match err.kind() {
+                std::io::ErrorKind::AlreadyExists => {}
+                _ => return Err(err),
+            },
+            _ => {}
+        };
         Ok(Self {
             sector_size,
             max_cache_size,
             path: path.to_path_buf(),
             region_cache: HashMap::new(),
-            _phantom: PhantomData::default(),
         })
     }
 
-    pub fn write(&mut self, entry_location: K, data: &[u8]) -> Result<(), RegionWriteError> {
+    pub fn write<K: Key<R> + Copy>(&mut self, entry_location: K, data: &[u8]) -> Result<(), RegionWriteError> {
         if self.region_cache.len() > self.max_cache_size {
             self.flush()?
         }
