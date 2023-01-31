@@ -1,5 +1,5 @@
 pub const fn ceil_div(x: i64, y: i64) -> i64 {
-    return -floor_div(-x, y);
+    -floor_div(-x, y)
 }
 
 pub const fn floor_div(x: i64, y: i64) -> i64 {
@@ -8,7 +8,7 @@ pub const fn floor_div(x: i64, y: i64) -> i64 {
     if (x ^ y) < 0 && (r * y != x) {
         r -= 1;
     }
-    return r;
+    r
 }
 
 pub const fn ceil_div_usize(x: usize, y: usize) -> usize {

@@ -1,5 +1,4 @@
 use std::collections::HashMap;
-use std::error::Error;
 use std::fmt::{Debug, Display, Formatter};
 
 use byteorder::{LittleEndian, WriteBytesExt};
@@ -101,11 +100,11 @@ pub enum Anvil2CCConversionError {
 impl Debug for Anvil2CCConversionError {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         match self {
-            InvalidData(err) => f.write_str(&*format!("{}", err)),
-            NbtRepr(err) => f.write_str(&*format!("{}", err)),
-            NbtStructure(err) => f.write_str(&*format!("{}", err)),
-            NbtIo(err) => f.write_str(&*format!("{}", err)),
-            StdIo(err) => f.write_str(&*format!("{}", err)),
+            InvalidData(err) => f.write_str(&format!("{}", err)),
+            NbtRepr(err) => f.write_str(&format!("{}", err)),
+            NbtStructure(err) => f.write_str(&format!("{}", err)),
+            NbtIo(err) => f.write_str(&format!("{}", err)),
+            StdIo(err) => f.write_str(&format!("{}", err)),
         }
     }
 }
@@ -113,11 +112,11 @@ impl Debug for Anvil2CCConversionError {
 impl Display for Anvil2CCConversionError {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         match self {
-            InvalidData(err) => f.write_str(&*format!("{}", err)),
-            NbtRepr(err) => f.write_str(&*format!("{}", err)),
-            NbtStructure(err) => f.write_str(&*format!("{}", err)),
-            NbtIo(err) => f.write_str(&*format!("{}", err)),
-            StdIo(err) => f.write_str(&*format!("{}", err)),
+            InvalidData(err) => f.write_str(&format!("{}", err)),
+            NbtRepr(err) => f.write_str(&format!("{}", err)),
+            NbtStructure(err) => f.write_str(&format!("{}", err)),
+            NbtIo(err) => f.write_str(&format!("{}", err)),
+            StdIo(err) => f.write_str(&format!("{}", err)),
         }
     }
 }

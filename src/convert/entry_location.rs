@@ -35,7 +35,7 @@ impl Key<RegionPos3d> for EntryLocation3d {
     }
 
     fn id(&self) -> usize {
-        ((self.x as usize & Self::LOC_BITMASK) << Self::LOC_BITS * 2)
+        ((self.x as usize & Self::LOC_BITMASK) << (Self::LOC_BITS * 2))
             | ((self.y as usize & Self::LOC_BITMASK) << Self::LOC_BITS)
             | (self.z as usize & Self::LOC_BITMASK)
     }

@@ -5,7 +5,7 @@ use std::fmt::{Debug, Display, Formatter};
 use std::fs;
 use std::fs::File;
 use std::io::{BufWriter, ErrorKind, Write};
-use std::marker::PhantomData;
+
 use std::path::{Path, PathBuf};
 
 #[derive(Debug)]
@@ -23,8 +23,8 @@ impl From<std::io::Error> for RegionWriteError {
 impl Display for RegionWriteError {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         match self {
-            RegionWriteError::StdIo(err) => f.write_str(&*format!("Error when reading region: {}", err)),
-            RegionWriteError::MissingHeader(path) => f.write_str(&*format!("Missing header in region {:?}", path)),
+            RegionWriteError::StdIo(err) => f.write_str(&format!("Error when reading region: {}", err)),
+            RegionWriteError::MissingHeader(path) => f.write_str(&format!("Missing header in region {:?}", path)),
         }
     }
 }
@@ -153,7 +153,7 @@ impl WriteRegion {
         let packed = (bytes[sector_offset + 3] as u32)
             | (bytes[sector_offset + 2] as u32) << 8
             | (bytes[sector_offset + 1] as u32) << 16
-            | (bytes[sector_offset + 0] as u32) << 24;
+            | (bytes[sector_offset] as u32) << 24;
 
         let size = packed & Self::SIZE_MASK;
         let offset = packed >> Self::SIZE_BITS;

@@ -27,8 +27,8 @@ impl From<std::io::Error> for AnvilReadError {
 impl Debug for AnvilReadError {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         match self {
-            AnvilReadError::StdIo(err) => f.write_str(&*format!("Error when reading anvil region: {}", err)),
-            AnvilReadError::MissingHeader(region_pos) => f.write_str(&*format!("Missing header in region {}", region_pos)),
+            AnvilReadError::StdIo(err) => f.write_str(&format!("Error when reading anvil region: {}", err)),
+            AnvilReadError::MissingHeader(region_pos) => f.write_str(&format!("Missing header in region {}", region_pos)),
         }
     }
 }
@@ -36,8 +36,8 @@ impl Debug for AnvilReadError {
 impl Display for AnvilReadError {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         match self {
-            AnvilReadError::StdIo(err) => f.write_str(&*format!("Error when reading anvil region: {}", err)),
-            AnvilReadError::MissingHeader(region_pos) => f.write_str(&*format!("Missing header in region {}", region_pos)),
+            AnvilReadError::StdIo(err) => f.write_str(&format!("Error when reading anvil region: {}", err)),
+            AnvilReadError::MissingHeader(region_pos) => f.write_str(&format!("Missing header in region {}", region_pos)),
         }
     }
 }
@@ -69,7 +69,7 @@ impl AnvilRegionReader {
             let packed = (bytes[sector_offset + 3] as u32)
                 | (bytes[sector_offset + 2] as u32) << 8
                 | (bytes[sector_offset + 1] as u32) << 16
-                | (bytes[sector_offset + 0] as u32) << 24;
+                | (bytes[sector_offset] as u32) << 24;
 
             let offset = (packed >> Self::SIZE_BITS) as usize;
             let size = (packed & Self::SIZE_MASK) as usize;

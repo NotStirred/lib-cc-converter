@@ -44,7 +44,7 @@ impl<SPACE: CoordinateSpace> Hash for Vec2i<SPACE> {
 
 impl<SPACE: CoordinateSpace> Display for Vec2i<SPACE> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        f.write_str(&*format!("({}, {})", self.x, self.z))
+        f.write_str(&format!("({}, {})", self.x, self.z))
     }
 }
 
@@ -100,7 +100,7 @@ impl<SPACE: CoordinateSpace> std::ops::AddAssign<&Vec2i<SPACE>> for Vec2i<SPACE>
     fn add_assign(&mut self, rhs: &Vec2i<SPACE>) {
         let lhs = self;
         {
-            (|a: &mut Vec2i<SPACE>, b: &Vec2i<SPACE>| -> () {
+            (|a: &mut Vec2i<SPACE>, b: &Vec2i<SPACE>| {
                 {
                     a.x += b.x;
                     a.z += b.z;
@@ -114,7 +114,7 @@ impl<SPACE: CoordinateSpace> std::ops::AddAssign<Vec2i<SPACE>> for Vec2i<SPACE> 
     fn add_assign(&mut self, rhs: Vec2i<SPACE>) {
         let lhs = self;
         {
-            (|a: &mut Vec2i<SPACE>, b: &Vec2i<SPACE>| -> () {
+            (|a: &mut Vec2i<SPACE>, b: &Vec2i<SPACE>| {
                 {
                     a.x += b.x;
                     a.z += b.z;
@@ -168,7 +168,7 @@ impl<SPACE: CoordinateSpace> std::ops::SubAssign<&Vec2i<SPACE>> for Vec2i<SPACE>
     fn sub_assign(&mut self, rhs: &Vec2i<SPACE>) {
         let lhs = self;
         {
-            (|a: &mut Vec2i<SPACE>, b: &Vec2i<SPACE>| -> () {
+            (|a: &mut Vec2i<SPACE>, b: &Vec2i<SPACE>| {
                 {
                     a.x -= b.x;
                     a.z -= b.z;
@@ -182,7 +182,7 @@ impl<SPACE: CoordinateSpace> std::ops::SubAssign<Vec2i<SPACE>> for Vec2i<SPACE> 
     fn sub_assign(&mut self, rhs: Vec2i<SPACE>) {
         let lhs = self;
         {
-            (|a: &mut Vec2i<SPACE>, b: &Vec2i<SPACE>| -> () {
+            (|a: &mut Vec2i<SPACE>, b: &Vec2i<SPACE>| {
                 {
                     a.x -= b.x;
                     a.z -= b.z;
@@ -236,7 +236,7 @@ impl<SPACE: CoordinateSpace> std::ops::MulAssign<&Vec2i<SPACE>> for Vec2i<SPACE>
     fn mul_assign(&mut self, rhs: &Vec2i<SPACE>) {
         let lhs = self;
         {
-            (|a: &mut Vec2i<SPACE>, b: &Vec2i<SPACE>| -> () {
+            (|a: &mut Vec2i<SPACE>, b: &Vec2i<SPACE>| {
                 {
                     a.x *= b.x;
                     a.z *= b.z;
@@ -250,7 +250,7 @@ impl<SPACE: CoordinateSpace> std::ops::MulAssign<Vec2i<SPACE>> for Vec2i<SPACE> 
     fn mul_assign(&mut self, rhs: Vec2i<SPACE>) {
         let lhs = self;
         {
-            (|a: &mut Vec2i<SPACE>, b: &Vec2i<SPACE>| -> () {
+            (|a: &mut Vec2i<SPACE>, b: &Vec2i<SPACE>| {
                 {
                     a.x *= b.x;
                     a.z *= b.z;
@@ -304,7 +304,7 @@ impl<SPACE: CoordinateSpace> std::ops::DivAssign<&Vec2i<SPACE>> for Vec2i<SPACE>
     fn div_assign(&mut self, rhs: &Vec2i<SPACE>) {
         let lhs = self;
         {
-            (|a: &mut Vec2i<SPACE>, b: &Vec2i<SPACE>| -> () {
+            (|a: &mut Vec2i<SPACE>, b: &Vec2i<SPACE>| {
                 {
                     a.x /= b.x;
                     a.z /= b.z;
@@ -318,7 +318,7 @@ impl<SPACE: CoordinateSpace> std::ops::DivAssign<Vec2i<SPACE>> for Vec2i<SPACE> 
     fn div_assign(&mut self, rhs: Vec2i<SPACE>) {
         let lhs = self;
         {
-            (|a: &mut Vec2i<SPACE>, b: &Vec2i<SPACE>| -> () {
+            (|a: &mut Vec2i<SPACE>, b: &Vec2i<SPACE>| {
                 {
                     a.x /= b.x;
                     a.z /= b.z;
@@ -372,7 +372,7 @@ impl<SPACE: CoordinateSpace> std::ops::AddAssign<&i32> for Vec2i<SPACE> {
     fn add_assign(&mut self, rhs: &i32) {
         let lhs = self;
         {
-            (|a: &mut Vec2i<SPACE>, b: &i32| -> () {
+            (|a: &mut Vec2i<SPACE>, b: &i32| {
                 {
                     a.x += b;
                     a.z += b;
@@ -386,7 +386,7 @@ impl<SPACE: CoordinateSpace> std::ops::AddAssign<i32> for Vec2i<SPACE> {
     fn add_assign(&mut self, rhs: i32) {
         let lhs = self;
         {
-            (|a: &mut Vec2i<SPACE>, b: &i32| -> () {
+            (|a: &mut Vec2i<SPACE>, b: &i32| {
                 {
                     a.x += b;
                     a.z += b;
@@ -440,7 +440,7 @@ impl<SPACE: CoordinateSpace> std::ops::SubAssign<&i32> for Vec2i<SPACE> {
     fn sub_assign(&mut self, rhs: &i32) {
         let lhs = self;
         {
-            (|a: &mut Vec2i<SPACE>, b: &i32| -> () {
+            (|a: &mut Vec2i<SPACE>, b: &i32| {
                 {
                     a.x -= b;
                     a.z -= b;
@@ -454,7 +454,7 @@ impl<SPACE: CoordinateSpace> std::ops::SubAssign<i32> for Vec2i<SPACE> {
     fn sub_assign(&mut self, rhs: i32) {
         let lhs = self;
         {
-            (|a: &mut Vec2i<SPACE>, b: &i32| -> () {
+            (|a: &mut Vec2i<SPACE>, b: &i32| {
                 {
                     a.x -= b;
                     a.z -= b;
@@ -508,7 +508,7 @@ impl<SPACE: CoordinateSpace> std::ops::MulAssign<&i32> for Vec2i<SPACE> {
     fn mul_assign(&mut self, rhs: &i32) {
         let lhs = self;
         {
-            (|a: &mut Vec2i<SPACE>, b: &i32| -> () {
+            (|a: &mut Vec2i<SPACE>, b: &i32| {
                 {
                     a.x *= b;
                     a.z *= b;
@@ -522,7 +522,7 @@ impl<SPACE: CoordinateSpace> std::ops::MulAssign<i32> for Vec2i<SPACE> {
     fn mul_assign(&mut self, rhs: i32) {
         let lhs = self;
         {
-            (|a: &mut Vec2i<SPACE>, b: &i32| -> () {
+            (|a: &mut Vec2i<SPACE>, b: &i32| {
                 {
                     a.x *= b;
                     a.z *= b;
@@ -576,7 +576,7 @@ impl<SPACE: CoordinateSpace> std::ops::DivAssign<&i32> for Vec2i<SPACE> {
     fn div_assign(&mut self, rhs: &i32) {
         let lhs = self;
         {
-            (|a: &mut Vec2i<SPACE>, b: &i32| -> () {
+            (|a: &mut Vec2i<SPACE>, b: &i32| {
                 {
                     a.x /= b;
                     a.z /= b;
@@ -590,7 +590,7 @@ impl<SPACE: CoordinateSpace> std::ops::DivAssign<i32> for Vec2i<SPACE> {
     fn div_assign(&mut self, rhs: i32) {
         let lhs = self;
         {
-            (|a: &mut Vec2i<SPACE>, b: &i32| -> () {
+            (|a: &mut Vec2i<SPACE>, b: &i32| {
                 {
                     a.x /= b;
                     a.z /= b;
@@ -644,7 +644,7 @@ impl<SPACE: CoordinateSpace> std::ops::BitAndAssign<&Vec2i<SPACE>> for Vec2i<SPA
     fn bitand_assign(&mut self, rhs: &Vec2i<SPACE>) {
         let lhs = self;
         {
-            (|a: &mut Vec2i<SPACE>, b: &Vec2i<SPACE>| -> () {
+            (|a: &mut Vec2i<SPACE>, b: &Vec2i<SPACE>| {
                 {
                     a.x &= b.x;
                     a.z &= b.z;
@@ -658,7 +658,7 @@ impl<SPACE: CoordinateSpace> std::ops::BitAndAssign<Vec2i<SPACE>> for Vec2i<SPAC
     fn bitand_assign(&mut self, rhs: Vec2i<SPACE>) {
         let lhs = self;
         {
-            (|a: &mut Vec2i<SPACE>, b: &Vec2i<SPACE>| -> () {
+            (|a: &mut Vec2i<SPACE>, b: &Vec2i<SPACE>| {
                 {
                     a.x &= b.x;
                     a.z &= b.z;
@@ -712,7 +712,7 @@ impl<SPACE: CoordinateSpace> std::ops::BitOrAssign<&Vec2i<SPACE>> for Vec2i<SPAC
     fn bitor_assign(&mut self, rhs: &Vec2i<SPACE>) {
         let lhs = self;
         {
-            (|a: &mut Vec2i<SPACE>, b: &Vec2i<SPACE>| -> () {
+            (|a: &mut Vec2i<SPACE>, b: &Vec2i<SPACE>| {
                 {
                     a.x |= b.x;
                     a.z |= b.z;
@@ -726,7 +726,7 @@ impl<SPACE: CoordinateSpace> std::ops::BitOrAssign<Vec2i<SPACE>> for Vec2i<SPACE
     fn bitor_assign(&mut self, rhs: Vec2i<SPACE>) {
         let lhs = self;
         {
-            (|a: &mut Vec2i<SPACE>, b: &Vec2i<SPACE>| -> () {
+            (|a: &mut Vec2i<SPACE>, b: &Vec2i<SPACE>| {
                 {
                     a.x |= b.x;
                     a.z |= b.z;
@@ -780,7 +780,7 @@ impl<SPACE: CoordinateSpace> std::ops::ShlAssign<&Vec2i<SPACE>> for Vec2i<SPACE>
     fn shl_assign(&mut self, rhs: &Vec2i<SPACE>) {
         let lhs = self;
         {
-            (|a: &mut Vec2i<SPACE>, b: &Vec2i<SPACE>| -> () {
+            (|a: &mut Vec2i<SPACE>, b: &Vec2i<SPACE>| {
                 {
                     a.x <<= b.x;
                     a.z <<= b.z;
@@ -794,7 +794,7 @@ impl<SPACE: CoordinateSpace> std::ops::ShlAssign<Vec2i<SPACE>> for Vec2i<SPACE> 
     fn shl_assign(&mut self, rhs: Vec2i<SPACE>) {
         let lhs = self;
         {
-            (|a: &mut Vec2i<SPACE>, b: &Vec2i<SPACE>| -> () {
+            (|a: &mut Vec2i<SPACE>, b: &Vec2i<SPACE>| {
                 {
                     a.x <<= b.x;
                     a.z <<= b.z;
@@ -848,7 +848,7 @@ impl<SPACE: CoordinateSpace> std::ops::ShrAssign<&Vec2i<SPACE>> for Vec2i<SPACE>
     fn shr_assign(&mut self, rhs: &Vec2i<SPACE>) {
         let lhs = self;
         {
-            (|a: &mut Vec2i<SPACE>, b: &Vec2i<SPACE>| -> () {
+            (|a: &mut Vec2i<SPACE>, b: &Vec2i<SPACE>| {
                 {
                     a.x >>= b.x;
                     a.z >>= b.z;
@@ -862,7 +862,7 @@ impl<SPACE: CoordinateSpace> std::ops::ShrAssign<Vec2i<SPACE>> for Vec2i<SPACE> 
     fn shr_assign(&mut self, rhs: Vec2i<SPACE>) {
         let lhs = self;
         {
-            (|a: &mut Vec2i<SPACE>, b: &Vec2i<SPACE>| -> () {
+            (|a: &mut Vec2i<SPACE>, b: &Vec2i<SPACE>| {
                 {
                     a.x >>= b.x;
                     a.z >>= b.z;
@@ -924,7 +924,7 @@ impl<SPACE: CoordinateSpace> std::ops::BitAndAssign<&i32> for Vec2i<SPACE> {
     fn bitand_assign(&mut self, rhs: &i32) {
         let lhs = self;
         {
-            (|a: &mut Vec2i<SPACE>, b: &i32| -> () {
+            (|a: &mut Vec2i<SPACE>, b: &i32| {
                 {
                     a.x &= b;
                     a.z &= b;
@@ -938,7 +938,7 @@ impl<SPACE: CoordinateSpace> std::ops::BitAndAssign<i32> for Vec2i<SPACE> {
     fn bitand_assign(&mut self, rhs: i32) {
         let lhs = self;
         {
-            (|a: &mut Vec2i<SPACE>, b: &i32| -> () {
+            (|a: &mut Vec2i<SPACE>, b: &i32| {
                 {
                     a.x &= b;
                     a.z &= b;
@@ -992,7 +992,7 @@ impl<SPACE: CoordinateSpace> std::ops::BitOrAssign<&i32> for Vec2i<SPACE> {
     fn bitor_assign(&mut self, rhs: &i32) {
         let lhs = self;
         {
-            (|a: &mut Vec2i<SPACE>, b: &i32| -> () {
+            (|a: &mut Vec2i<SPACE>, b: &i32| {
                 {
                     a.x |= b;
                     a.z |= b;
@@ -1006,7 +1006,7 @@ impl<SPACE: CoordinateSpace> std::ops::BitOrAssign<i32> for Vec2i<SPACE> {
     fn bitor_assign(&mut self, rhs: i32) {
         let lhs = self;
         {
-            (|a: &mut Vec2i<SPACE>, b: &i32| -> () {
+            (|a: &mut Vec2i<SPACE>, b: &i32| {
                 {
                     a.x |= b;
                     a.z |= b;
@@ -1060,7 +1060,7 @@ impl<SPACE: CoordinateSpace> std::ops::ShlAssign<&i32> for Vec2i<SPACE> {
     fn shl_assign(&mut self, rhs: &i32) {
         let lhs = self;
         {
-            (|a: &mut Vec2i<SPACE>, b: &i32| -> () {
+            (|a: &mut Vec2i<SPACE>, b: &i32| {
                 {
                     a.x <<= b;
                     a.z <<= b;
@@ -1074,7 +1074,7 @@ impl<SPACE: CoordinateSpace> std::ops::ShlAssign<i32> for Vec2i<SPACE> {
     fn shl_assign(&mut self, rhs: i32) {
         let lhs = self;
         {
-            (|a: &mut Vec2i<SPACE>, b: &i32| -> () {
+            (|a: &mut Vec2i<SPACE>, b: &i32| {
                 {
                     a.x <<= b;
                     a.z <<= b;
@@ -1128,7 +1128,7 @@ impl<SPACE: CoordinateSpace> std::ops::ShrAssign<&i32> for Vec2i<SPACE> {
     fn shr_assign(&mut self, rhs: &i32) {
         let lhs = self;
         {
-            (|a: &mut Vec2i<SPACE>, b: &i32| -> () {
+            (|a: &mut Vec2i<SPACE>, b: &i32| {
                 {
                     a.x >>= b;
                     a.z >>= b;
@@ -1142,7 +1142,7 @@ impl<SPACE: CoordinateSpace> std::ops::ShrAssign<i32> for Vec2i<SPACE> {
     fn shr_assign(&mut self, rhs: i32) {
         let lhs = self;
         {
-            (|a: &mut Vec2i<SPACE>, b: &i32| -> () {
+            (|a: &mut Vec2i<SPACE>, b: &i32| {
                 {
                     a.x >>= b;
                     a.z >>= b;
