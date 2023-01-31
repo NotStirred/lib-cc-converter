@@ -6,7 +6,8 @@ use byteorder::{LittleEndian, WriteBytesExt};
 
 use lazy_static::lazy_static;
 
-use crate::convert::anvil2cc::Anvil2CCConversionError::{InvalidData, NbtIo, NbtRepr, NbtStructure, Other};
+use crate::convert::anvil2cc::Anvil2CCConversionError::{InvalidData, NbtIo, NbtRepr, NbtStructure, StdIo};
+use crate::util::errors::error_from;
 use quartz_nbt::io::NbtIoError;
 use quartz_nbt::NbtTag::{Byte, ByteArray, Compound, Int, IntArray, String};
 use quartz_nbt::{NbtCompound, NbtList, NbtReprError, NbtStructureError, NbtTag};
@@ -94,7 +95,7 @@ pub enum Anvil2CCConversionError {
     NbtRepr(NbtReprError),
     NbtStructure(NbtStructureError),
     NbtIo(NbtIoError),
-    Other(Box<dyn Error>),
+    StdIo(std::io::Error),
 }
 
 impl Debug for Anvil2CCConversionError {
@@ -104,7 +105,7 @@ impl Debug for Anvil2CCConversionError {
             NbtRepr(err) => f.write_str(&*format!("{}", err)),
             NbtStructure(err) => f.write_str(&*format!("{}", err)),
             NbtIo(err) => f.write_str(&*format!("{}", err)),
-            Other(err) => f.write_str(&*format!("{}", err)),
+            StdIo(err) => f.write_str(&*format!("{}", err)),
         }
     }
 }
@@ -116,36 +117,16 @@ impl Display for Anvil2CCConversionError {
             NbtRepr(err) => f.write_str(&*format!("{}", err)),
             NbtStructure(err) => f.write_str(&*format!("{}", err)),
             NbtIo(err) => f.write_str(&*format!("{}", err)),
-            Other(err) => f.write_str(&*format!("{}", err)),
+            StdIo(err) => f.write_str(&*format!("{}", err)),
         }
     }
 }
 
-impl From<InvalidChunkTagError> for Anvil2CCConversionError {
-    fn from(error: InvalidChunkTagError) -> Self {
-        InvalidData(error)
-    }
-}
-impl From<NbtReprError> for Anvil2CCConversionError {
-    fn from(error: NbtReprError) -> Self {
-        NbtRepr(error)
-    }
-}
-impl From<NbtStructureError> for Anvil2CCConversionError {
-    fn from(error: NbtStructureError) -> Self {
-        NbtStructure(error)
-    }
-}
-impl From<NbtIoError> for Anvil2CCConversionError {
-    fn from(error: NbtIoError) -> Self {
-        NbtIo(error)
-    }
-}
-impl From<std::io::Error> for Anvil2CCConversionError {
-    fn from(error: std::io::Error) -> Self {
-        Other(Box::new(error))
-    }
-}
+error_from!(Anvil2CCConversionError, InvalidChunkTagError, InvalidData);
+error_from!(Anvil2CCConversionError, NbtReprError, NbtRepr);
+error_from!(Anvil2CCConversionError, NbtStructureError, NbtStructure);
+error_from!(Anvil2CCConversionError, NbtIoError, NbtIo);
+error_from!(Anvil2CCConversionError, std::io::Error, StdIo);
 
 pub struct Anvil2CCConverter {
     fix_missing_tile_entities: bool,
