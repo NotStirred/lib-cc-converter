@@ -1,3 +1,6 @@
+use once_cell::unsync::Lazy;
+use regex::Regex;
+
 use crate::convert::entry_location::RegionKey;
 use crate::util::vec::vec2i::Vec2i;
 use crate::util::vec::vec3i::Vec3i;
@@ -76,6 +79,8 @@ impl CoordinateSpace for RegionSpace2d {}
 pub type RegionPos2d = Vec2i<RegionSpace2d>;
 
 impl RegionPos2d {
+    const FORMAT_REGEX: Lazy<Regex> = Lazy::new(|| Regex::new(r"r\.\-?\d*\.\-?\d*\.mca$").unwrap());
+
     pub const DIAMETER_IN_CHUNKS: usize = 32;
     pub const CHUNKS_COUNT: usize = Self::DIAMETER_IN_CHUNKS * Self::DIAMETER_IN_CHUNKS;
 
@@ -88,5 +93,27 @@ impl RegionPos2d {
 
     pub fn region_key(&self) -> RegionKey {
         format!("r.{}.{}.mca", self.x, self.z)
+    }
+
+    pub fn is_valid(filename: &str) -> bool {
+        Self::FORMAT_REGEX.is_match(filename)
+    }
+
+    pub fn from(filename: &str) -> Option<RegionPos2d> {
+        if !Self::is_valid(filename) {
+            return None;
+        }
+
+        let split: Vec<_> = filename.split(".").collect(); // string is valid, so length is 4
+
+        let x: Result<i32, _> = str::parse(split[1]);
+        let z: Result<i32, _> = str::parse(split[2]);
+
+        if let Ok(x) = x {
+            if let Ok(z) = z {
+                return Some(RegionPos2d::new(x, z));
+            }
+        }
+        None
     }
 }
