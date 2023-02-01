@@ -14,6 +14,8 @@ pub enum RegionWriteError {
     StdIo(std::io::Error),
 }
 
+impl std::error::Error for RegionWriteError {}
+
 impl From<std::io::Error> for RegionWriteError {
     fn from(err: std::io::Error) -> Self {
         RegionWriteError::StdIo(err)
