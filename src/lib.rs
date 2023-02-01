@@ -1,69 +1,100 @@
 pub mod convert;
-pub mod converter;
 pub mod io;
 pub mod util;
 
 #[cfg(test)]
 mod tests {
+    use std::sync::mpsc::TrySendError;
+    use std::sync::Arc;
+
     use crate::convert::anvil2cc::Anvil2CCConverter;
-    use crate::convert::data::anvil_chunk_data::AnvilChunkData;
-    use crate::convert::entry_location::EntryLocation3d;
+
+    use crate::convert::converter::{Converter, Reader, Writer};
     use crate::io::anvil_region_reader::AnvilRegionReader;
-    use crate::io::region_writer::CachingRegionWriter;
-    use crate::util::positions::RegionPos2d;
-    use crate::util::positions::RegionPos3d;
+    use crate::io::cubic_chunks_writer::CubicChunksWriter;
+
     use crate::util::test_utils;
 
     #[test]
     fn simple_region_test() {
-        let test_resources_path = test_utils::test_resources_path();
+        let src_path = test_utils::test_resources_path().join("simple_region_test");
+        let dst_path = test_utils::test_resources_path().join("simple_region_test/out");
 
-        let reader = AnvilRegionReader::new(&test_resources_path.join("simple_region_test"));
-        let region_pos = RegionPos2d::new(-1, 0);
-        let mut region_data = match reader.read(region_pos) {
-            Ok(data) => data,
-            Err(err) => {
-                panic!("{}, {}", region_pos, err);
-            }
-        };
+        let mut reader = AnvilRegionReader::new(&src_path);
+        let converter = Arc::new(Anvil2CCConverter::new(true));
+        let mut writer = CubicChunksWriter::new(&dst_path, 64).unwrap();
+        let (convert_sender, convert_receiver) = multiqueue::mpmc_queue(64);
+        let (write_sender, write_receiver) = multiqueue::mpmc_queue(64);
 
-        let data = &mut region_data.data;
-        let indices = &region_data.chunk_indices;
-
-        let converter = Anvil2CCConverter::new(true);
-
-        let mut writer: CachingRegionWriter<RegionPos3d> =
-            CachingRegionWriter::new(&test_resources_path.join("simple_region_test/out"), 512, 64)
-                .expect("Failed to create CubicRegionWriter");
-        for x in 0..32 {
-            for z in 0..32 {
-                let i = x + z * RegionPos2d::DIAMETER_IN_CHUNKS;
-                if let Some((start, end)) = indices[i] {
-                    let cube_data_array = match converter.convert(AnvilChunkData {
-                        data: &data[start..end],
-                        position: region_pos.to_minecraft_chunk_location_offset(x as i32, z as i32),
-                    }) {
-                        Ok(data) => data,
-                        Err(err) => {
-                            panic!("{}", err);
+        let read_thread = std::thread::spawn(move || {
+            println!("Read thread start");
+            reader.load_all_chunks(|mut data| loop {
+                match convert_sender.try_send(data) {
+                    Ok(_) => break,
+                    Err(err) => match err {
+                        TrySendError::Full(returned_data) => {
+                            data = returned_data;
+                            std::thread::yield_now()
                         }
-                    };
+                        _ => break,
+                    },
+                };
+            });
+            println!("Read thread end");
+        });
 
-                    for cube_data in cube_data_array.iter() {
-                        for (y, data) in cube_data.cube_data.iter() {
-                            let entry_location = EntryLocation3d::new(cube_data.position.x, *y, cube_data.position.z);
+        let mut convert_threads = Vec::new();
+        for _ in 0..16 {
+            let converter = converter.clone();
+            let convert_receiver = convert_receiver.clone();
+            let write_sender = write_sender.clone();
+            convert_threads.push(std::thread::spawn(move || {
+                println!("Convert thread start");
+                loop {
+                    if let Ok(data) = convert_receiver.recv() {
+                        let converted = converter.convert(data).unwrap();
 
-                            match writer.write(entry_location, data) {
-                                Ok(_) => {}
-                                Err(err) => {
-                                    panic!("{}", err);
-                                }
-                            };
+                        for mut data in converted.into_iter() {
+                            loop {
+                                match write_sender.try_send(data) {
+                                    Ok(_) => break,
+                                    Err(err) => match err {
+                                        TrySendError::Full(returned_data) => {
+                                            data = returned_data;
+                                            std::thread::yield_now()
+                                        }
+                                        _ => break,
+                                    },
+                                };
+                            }
                         }
+                    } else {
+                        break;
                     }
                 }
-            }
+                println!("Convert thread end");
+            }));
         }
-        writer.flush().unwrap();
+        convert_receiver.unsubscribe();
+        write_sender.unsubscribe();
+
+        let write_thread = std::thread::spawn(move || {
+            println!("Write thread start");
+            loop {
+                if let Ok(data) = write_receiver.recv() {
+                    writer.write(data).unwrap();
+                } else {
+                    break;
+                }
+            }
+            writer.flush().unwrap();
+            println!("Write thread end");
+        });
+
+        read_thread.join().unwrap();
+        for thread in convert_threads {
+            thread.join().unwrap()
+        }
+        write_thread.join().unwrap();
     }
 }
