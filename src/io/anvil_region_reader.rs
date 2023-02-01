@@ -2,7 +2,7 @@ use std::fmt::{Debug, Display, Formatter};
 use std::fs;
 use std::path::{Path, PathBuf};
 
-use crate::convert::converter::Reader;
+use crate::convert::converter::{ReadError, Reader};
 use crate::convert::data::anvil_chunk_data::AnvilChunkData;
 use crate::convert::entry_location::MinecraftChunkLocation;
 use crate::util::positions::RegionPos2d;
@@ -103,17 +103,19 @@ impl AnvilRegionReader {
 }
 
 impl Reader<MinecraftChunkLocation, AnvilChunkData> for AnvilRegionReader {
-    fn load_all_chunks<F>(&mut self, data_consumer: F)
+    fn load_all_chunks<F>(&mut self, data_consumer: F) -> Result<(), ReadError>
     where
         F: Fn(AnvilChunkData) -> (),
     {
-        let paths = std::fs::read_dir(&self.region_location).unwrap();
+        let paths = std::fs::read_dir(&self.region_location)?;
         for path in paths {
             if let Ok(dir_entry) = path {
                 let path = dir_entry.path();
-                println!("file path: {}", path.display());
                 if path.extension().and_then(std::ffi::OsStr::to_str).unwrap_or("") == "mca" {
-                    let file_name = path.file_name().and_then(std::ffi::OsStr::to_str).unwrap();
+                    let file_name = match path.file_name().and_then(std::ffi::OsStr::to_str) {
+                        Some(name) => name,
+                        None => continue,
+                    };
                     if let Some(region_pos) = RegionPos2d::from(file_name) {
                         match self.read_region(region_pos) {
                             Ok(region_data) => {
@@ -132,11 +134,12 @@ impl Reader<MinecraftChunkLocation, AnvilChunkData> for AnvilRegionReader {
                                     }
                                 }
                             }
-                            Err(_) => panic!(),
+                            Err(err) => println!("Error reading region {}, skipping it.\n{}", file_name, err),
                         }
                     }
                 }
             }
         }
+        Ok(())
     }
 }

@@ -28,18 +28,20 @@ mod tests {
 
         let read_thread = std::thread::spawn(move || {
             println!("Read thread start");
-            reader.load_all_chunks(|mut data| loop {
-                match convert_sender.try_send(data) {
-                    Ok(_) => break,
-                    Err(err) => match err {
-                        TrySendError::Full(returned_data) => {
-                            data = returned_data;
-                            std::thread::yield_now()
-                        }
-                        _ => break,
-                    },
-                };
-            });
+            reader
+                .load_all_chunks(|mut data| loop {
+                    match convert_sender.try_send(data) {
+                        Ok(_) => break,
+                        Err(err) => match err {
+                            TrySendError::Full(returned_data) => {
+                                data = returned_data;
+                                std::thread::yield_now()
+                            }
+                            _ => break,
+                        },
+                    };
+                })
+                .unwrap();
             println!("Read thread end");
         });
 

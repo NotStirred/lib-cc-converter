@@ -69,7 +69,9 @@ impl WriteRegion {
         data[4..4 + value.len()].copy_from_slice(value);
 
         let id = key.id() as usize;
-        self.write_entries.as_mut().unwrap()[id] = Some(data);
+        self.write_entries
+            .as_mut()
+            .expect("Initialize is complete, this should be unreachable")[id] = Some(data);
         Ok(())
     }
 

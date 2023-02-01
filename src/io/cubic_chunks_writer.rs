@@ -32,7 +32,9 @@ impl Writer<CubicChunks112Data> for CubicChunksWriter {
     fn write(&mut self, out_data: CubicChunks112Data) -> Result<(), WriteError> {
         for (y, data) in &out_data.cube_data {
             let pos = EntryLocation3d::new(out_data.position.x, *y, out_data.position.z);
-            self.inner.write(pos, &*data).unwrap();
+            if let Err(err) = self.inner.write(pos, data) {
+                return Err(WriteError::Custom(Box::new(err)));
+            }
         }
         Ok(())
     }
