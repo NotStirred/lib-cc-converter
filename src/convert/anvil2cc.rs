@@ -1,4 +1,5 @@
 use std::collections::HashMap;
+use std::error::Error;
 use std::fmt::{Debug, Display, Formatter};
 
 use byteorder::{LittleEndian, WriteBytesExt};
@@ -15,6 +16,8 @@ use crate::convert::data::anvil_chunk_data::AnvilChunkData;
 use crate::convert::data::cubic_chunks_1_12::CubicChunks112Data;
 use crate::util::compress::{read_compressed, write_compressed};
 use crate::util::reinterpret::vec_u8_into_i8;
+
+use super::converter::{ConversionError, Converter};
 
 lazy_static! {
     static ref TE_REGISTRY: HashMap<i32, &'static str> = create_te_registry();
@@ -100,11 +103,11 @@ pub enum Anvil2CCConversionError {
 impl Debug for Anvil2CCConversionError {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         match self {
-            InvalidData(err) => f.write_str(&format!("{}", err)),
-            NbtRepr(err) => f.write_str(&format!("{}", err)),
-            NbtStructure(err) => f.write_str(&format!("{}", err)),
-            NbtIo(err) => f.write_str(&format!("{}", err)),
-            StdIo(err) => f.write_str(&format!("{}", err)),
+            InvalidData(err) => f.write_str(&format!("{:?}", err)),
+            NbtRepr(err) => f.write_str(&format!("{:?}", err)),
+            NbtStructure(err) => f.write_str(&format!("{:?}", err)),
+            NbtIo(err) => f.write_str(&format!("{:?}", err)),
+            StdIo(err) => f.write_str(&format!("{:?}", err)),
         }
     }
 }
@@ -127,6 +130,14 @@ error_from!(Anvil2CCConversionError, NbtStructureError, NbtStructure);
 error_from!(Anvil2CCConversionError, NbtIoError, NbtIo);
 error_from!(Anvil2CCConversionError, std::io::Error, StdIo);
 
+impl Error for Anvil2CCConversionError {}
+
+impl From<Anvil2CCConversionError> for ConversionError {
+    fn from(error: Anvil2CCConversionError) -> Self {
+        ConversionError::Custom(Box::new(error))
+    }
+}
+
 pub struct Anvil2CCConverter {
     fix_missing_tile_entities: bool,
 }
@@ -134,16 +145,6 @@ pub struct Anvil2CCConverter {
 impl Anvil2CCConverter {
     pub fn new(fix_missing_tile_entities: bool) -> Self {
         Self { fix_missing_tile_entities }
-    }
-
-    pub fn convert(&self, src: AnvilChunkData) -> Result<Box<[CubicChunks112Data]>, Anvil2CCConversionError> {
-        let data = CubicChunks112Data::from_data(
-            src.position.to_entry_location_2d(),
-            self.extract_column_data(src.data)?,
-            self.extract_cube_data(src.data)?,
-        );
-
-        Ok(Box::new([data]))
     }
 
     fn extract_column_data(&self, data: &[u8]) -> Result<Vec<u8>, Anvil2CCConversionError> {
@@ -540,5 +541,17 @@ impl Anvil2CCConverter {
             }
         }
         Ok(cube_ticks)
+    }
+}
+
+impl Converter<AnvilChunkData, CubicChunks112Data> for Anvil2CCConverter {
+    fn convert(&self, src: AnvilChunkData) -> Result<Vec<CubicChunks112Data>, ConversionError> {
+        let data = CubicChunks112Data::from_data(
+            src.position.to_entry_location_2d(),
+            self.extract_column_data(&src.data)?,
+            self.extract_cube_data(&src.data)?,
+        );
+
+        Ok(Vec::from([data]))
     }
 }
