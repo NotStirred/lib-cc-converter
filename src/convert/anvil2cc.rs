@@ -226,8 +226,8 @@ impl Anvil2CCConverter {
 
     fn fix_heightmap(heights: &[i32]) -> Vec<i32> {
         let mut heights = heights.to_vec();
-        for i in 0..heights.len() {
-            heights[i] -= 1; // vanilla = 1 above top, data = top block
+        for height in heights.iter_mut() {
+            *height -= 1; // vanilla = 1 above top, data = top block
         }
         heights
     }
@@ -235,10 +235,10 @@ impl Anvil2CCConverter {
     fn make_dummy_opacity_index(height_map: &[i32]) -> Result<Vec<i8>, std::io::Error> {
         let mut out = Vec::new();
 
-        for i in 0..256 {
+        for entry in height_map {
             // 256 segment arrays
             out.write_i32::<LittleEndian>(0)?; // minY
-            out.write_i32::<LittleEndian>(height_map[i])?; // maxY
+            out.write_i32::<LittleEndian>(*entry)?; // maxY
             out.write_i16::<LittleEndian>(0)?; // no segments - write zero
         }
         Ok(vec_u8_into_i8(out))
@@ -417,7 +417,7 @@ impl Anvil2CCConverter {
             to_add = (to_add & 0xF) | asd;
 
             let id = (to_add << 8) | blocks[i as usize] as i32;
-            let te_id = TE_REGISTRY.get(&(id as i32));
+            let te_id = TE_REGISTRY.get(&id);
             if let Some(te_id) = te_id {
                 te_map.entry(i).or_insert_with(|| {
                     let mut tag = NbtCompound::new();
@@ -480,10 +480,10 @@ impl Anvil2CCConverter {
     fn fix_section(src_section: &mut NbtCompound) -> Result<(), NbtReprError> {
         let ids = src_section.get_mut::<_, &mut Vec<i8>>("Blocks")?;
         // TODO: handle it the forge way
-        for i in 0..ids.len() {
-            if ids[i] == 7 {
-                // bedrock
-                ids[i] = 1; // stone
+        for id in ids.iter_mut() {
+            // bedrock
+            if *id == 7 {
+                *id = 1; // stone
             }
         }
         Ok(())

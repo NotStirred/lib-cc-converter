@@ -104,7 +104,7 @@ impl RegionPos2d {
             return None;
         }
 
-        let split: Vec<_> = filename.split(".").collect(); // string is valid, so length is 4
+        let split: Vec<_> = filename.split('.').collect(); // string is valid, so length is 4
 
         let x: Result<i32, _> = str::parse(split[1]);
         let z: Result<i32, _> = str::parse(split[2]);

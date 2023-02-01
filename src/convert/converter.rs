@@ -12,7 +12,7 @@ error_from!(ReadError, std::io::Error, ReadError::StdIo);
 pub trait Reader<K, IN> {
     fn load_all_chunks<F>(&mut self, f: F) -> Result<(), ReadError>
     where
-        F: Fn(IN) -> ();
+        F: Fn(IN);
 }
 
 #[derive(Debug)]

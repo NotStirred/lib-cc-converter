@@ -68,7 +68,7 @@ impl WriteRegion {
         data.resize(num_sectors * self.sector_size, 0);
         data[4..4 + value.len()].copy_from_slice(value);
 
-        let id = key.id() as usize;
+        let id = key.id();
         self.write_entries
             .as_mut()
             .expect("Initialize is complete, this should be unreachable")[id] = Some(data);
@@ -92,8 +92,8 @@ impl WriteRegion {
         }
 
         let mut write_entries = vec![None; self.entries_per_region];
-        for cube_idx in 0..self.entries_per_region {
-            let sector_offset = (cube_idx * 4) as usize;
+        for (cube_idx, entry) in write_entries.iter_mut().enumerate().take(self.entries_per_region) {
+            let sector_offset = cube_idx * 4;
 
             let (size, offset) = Self::unpack_size_offset(&bytes, sector_offset);
 
@@ -106,9 +106,9 @@ impl WriteRegion {
             let slice_start = (byte_offset + 4) as usize;
             let slice_end = (byte_offset + (size * self.sector_size as u32)) as usize;
 
-            let entry = Vec::from(&bytes[slice_start..slice_end]);
-            write_entries[cube_idx] = Some(entry);
+            entry.replace(bytes[slice_start..slice_end].to_vec());
         }
+
         self.write_entries = Some(write_entries);
         Ok(())
     }
@@ -146,14 +146,14 @@ impl WriteRegion {
     }
 
     fn get_sector_number(&self, bytes: usize) -> usize {
-        math_util::ceil_div_usize(bytes, self.sector_size) as usize
+        math_util::ceil_div_usize(bytes, self.sector_size)
     }
 
     fn packed(offset: usize, size: usize) -> usize {
         size | (offset << Self::SIZE_BITS)
     }
 
-    fn unpack_size_offset(bytes: &Vec<u8>, sector_offset: usize) -> (u32, u32) {
+    fn unpack_size_offset(bytes: &[u8], sector_offset: usize) -> (u32, u32) {
         let packed = (bytes[sector_offset + 3] as u32)
             | (bytes[sector_offset + 2] as u32) << 8
             | (bytes[sector_offset + 1] as u32) << 16

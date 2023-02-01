@@ -52,28 +52,22 @@ mod tests {
             let write_sender = write_sender.clone();
             convert_threads.push(std::thread::spawn(move || {
                 println!("Convert thread start");
-                loop {
-                    if let Ok(data) = convert_receiver.recv() {
-                        let converted = converter.convert(data).unwrap();
+                while let Ok(data) = convert_receiver.recv() {
+                    let converted = converter.convert(data).unwrap();
 
-                        for mut data in converted.into_iter() {
-                            loop {
-                                match write_sender.try_send(data) {
-                                    Ok(_) => break,
-                                    Err(err) => match err {
-                                        TrySendError::Full(returned_data) => {
-                                            data = returned_data;
-                                            std::thread::yield_now()
-                                        }
-                                        _ => break,
-                                    },
-                                };
+                    for mut data in converted.into_iter() {
+                        while let Err(err) = write_sender.try_send(data) {
+                            match err {
+                                TrySendError::Full(returned_data) => {
+                                    data = returned_data;
+                                    std::thread::yield_now()
+                                }
+                                _ => break,
                             }
                         }
-                    } else {
-                        break;
                     }
                 }
+
                 println!("Convert thread end");
             }));
         }
@@ -82,12 +76,9 @@ mod tests {
 
         let write_thread = std::thread::spawn(move || {
             println!("Write thread start");
-            loop {
-                if let Ok(data) = write_receiver.recv() {
-                    writer.write(data).unwrap();
-                } else {
-                    break;
-                }
+
+            while let Ok(data) = write_receiver.recv() {
+                writer.write(data).unwrap();
             }
             writer.flush().unwrap();
             println!("Write thread end");

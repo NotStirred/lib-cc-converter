@@ -16,12 +16,11 @@ pub struct CachingRegionWriter<REGION> {
 
 impl<REGION> CachingRegionWriter<REGION> {
     pub fn new(path: &Path, sector_size: usize, entries_per_region: usize, max_cache_size: usize) -> Result<Self, std::io::Error> {
-        match fs::create_dir(path) {
-            Err(err) => match err.kind() {
+        if let Err(err) = fs::create_dir(path) {
+            match err.kind() {
                 std::io::ErrorKind::AlreadyExists => {}
                 _ => return Err(err),
-            },
-            _ => {}
+            }
         };
         Ok(Self {
             sector_size,

@@ -52,6 +52,7 @@ impl<SPACE: CoordinateSpace> Display for Vec3i<SPACE> {
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::Neg for Vec3i<SPACE> {
     type Output = Vec3i<SPACE>;
     fn neg(self) -> Self::Output {
@@ -60,6 +61,7 @@ impl<SPACE: CoordinateSpace> std::ops::Neg for Vec3i<SPACE> {
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::Add<&Vec3i<SPACE>> for &Vec3i<SPACE> {
     type Output = Vec3i<SPACE>;
     fn add(self, rhs: &Vec3i<SPACE>) -> Self::Output {
@@ -70,6 +72,7 @@ impl<SPACE: CoordinateSpace> std::ops::Add<&Vec3i<SPACE>> for &Vec3i<SPACE> {
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::Add<Vec3i<SPACE>> for &Vec3i<SPACE> {
     type Output = Vec3i<SPACE>;
     fn add(self, rhs: Vec3i<SPACE>) -> Self::Output {
@@ -80,6 +83,7 @@ impl<SPACE: CoordinateSpace> std::ops::Add<Vec3i<SPACE>> for &Vec3i<SPACE> {
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::Add<&Vec3i<SPACE>> for Vec3i<SPACE> {
     type Output = Vec3i<SPACE>;
     fn add(self, rhs: &Vec3i<SPACE>) -> Self::Output {
@@ -90,6 +94,7 @@ impl<SPACE: CoordinateSpace> std::ops::Add<&Vec3i<SPACE>> for Vec3i<SPACE> {
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::Add<Vec3i<SPACE>> for Vec3i<SPACE> {
     type Output = Vec3i<SPACE>;
     fn add(self, rhs: Vec3i<SPACE>) -> Self::Output {
@@ -100,36 +105,35 @@ impl<SPACE: CoordinateSpace> std::ops::Add<Vec3i<SPACE>> for Vec3i<SPACE> {
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::AddAssign<&Vec3i<SPACE>> for Vec3i<SPACE> {
     fn add_assign(&mut self, rhs: &Vec3i<SPACE>) {
         let lhs = self;
         {
             (|a: &mut Vec3i<SPACE>, b: &Vec3i<SPACE>| {
-                {
-                    a.x += b.x;
-                    a.y += b.y;
-                    a.z += b.z;
-                }
+                a.x += b.x;
+                a.y += b.y;
+                a.z += b.z;
             })(lhs, rhs);
         }
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::AddAssign<Vec3i<SPACE>> for Vec3i<SPACE> {
     fn add_assign(&mut self, rhs: Vec3i<SPACE>) {
         let lhs = self;
         {
             (|a: &mut Vec3i<SPACE>, b: &Vec3i<SPACE>| {
-                {
-                    a.x += b.x;
-                    a.y += b.y;
-                    a.z += b.z;
-                }
+                a.x += b.x;
+                a.y += b.y;
+                a.z += b.z;
             })(lhs, &rhs);
         }
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::Sub<&Vec3i<SPACE>> for &Vec3i<SPACE> {
     type Output = Vec3i<SPACE>;
     fn sub(self, rhs: &Vec3i<SPACE>) -> Self::Output {
@@ -140,6 +144,7 @@ impl<SPACE: CoordinateSpace> std::ops::Sub<&Vec3i<SPACE>> for &Vec3i<SPACE> {
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::Sub<Vec3i<SPACE>> for &Vec3i<SPACE> {
     type Output = Vec3i<SPACE>;
     fn sub(self, rhs: Vec3i<SPACE>) -> Self::Output {
@@ -150,6 +155,7 @@ impl<SPACE: CoordinateSpace> std::ops::Sub<Vec3i<SPACE>> for &Vec3i<SPACE> {
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::Sub<&Vec3i<SPACE>> for Vec3i<SPACE> {
     type Output = Vec3i<SPACE>;
     fn sub(self, rhs: &Vec3i<SPACE>) -> Self::Output {
@@ -160,6 +166,7 @@ impl<SPACE: CoordinateSpace> std::ops::Sub<&Vec3i<SPACE>> for Vec3i<SPACE> {
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::Sub<Vec3i<SPACE>> for Vec3i<SPACE> {
     type Output = Vec3i<SPACE>;
     fn sub(self, rhs: Vec3i<SPACE>) -> Self::Output {
@@ -170,36 +177,35 @@ impl<SPACE: CoordinateSpace> std::ops::Sub<Vec3i<SPACE>> for Vec3i<SPACE> {
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::SubAssign<&Vec3i<SPACE>> for Vec3i<SPACE> {
     fn sub_assign(&mut self, rhs: &Vec3i<SPACE>) {
         let lhs = self;
         {
             (|a: &mut Vec3i<SPACE>, b: &Vec3i<SPACE>| {
-                {
-                    a.x -= b.x;
-                    a.y -= b.y;
-                    a.z -= b.z;
-                }
+                a.x -= b.x;
+                a.y -= b.y;
+                a.z -= b.z;
             })(lhs, rhs);
         }
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::SubAssign<Vec3i<SPACE>> for Vec3i<SPACE> {
     fn sub_assign(&mut self, rhs: Vec3i<SPACE>) {
         let lhs = self;
         {
             (|a: &mut Vec3i<SPACE>, b: &Vec3i<SPACE>| {
-                {
-                    a.x -= b.x;
-                    a.y -= b.y;
-                    a.z -= b.z;
-                }
+                a.x -= b.x;
+                a.y -= b.y;
+                a.z -= b.z;
             })(lhs, &rhs);
         }
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::Mul<&Vec3i<SPACE>> for &Vec3i<SPACE> {
     type Output = Vec3i<SPACE>;
     fn mul(self, rhs: &Vec3i<SPACE>) -> Self::Output {
@@ -210,6 +216,7 @@ impl<SPACE: CoordinateSpace> std::ops::Mul<&Vec3i<SPACE>> for &Vec3i<SPACE> {
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::Mul<Vec3i<SPACE>> for &Vec3i<SPACE> {
     type Output = Vec3i<SPACE>;
     fn mul(self, rhs: Vec3i<SPACE>) -> Self::Output {
@@ -220,6 +227,7 @@ impl<SPACE: CoordinateSpace> std::ops::Mul<Vec3i<SPACE>> for &Vec3i<SPACE> {
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::Mul<&Vec3i<SPACE>> for Vec3i<SPACE> {
     type Output = Vec3i<SPACE>;
     fn mul(self, rhs: &Vec3i<SPACE>) -> Self::Output {
@@ -230,6 +238,7 @@ impl<SPACE: CoordinateSpace> std::ops::Mul<&Vec3i<SPACE>> for Vec3i<SPACE> {
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::Mul<Vec3i<SPACE>> for Vec3i<SPACE> {
     type Output = Vec3i<SPACE>;
     fn mul(self, rhs: Vec3i<SPACE>) -> Self::Output {
@@ -240,36 +249,35 @@ impl<SPACE: CoordinateSpace> std::ops::Mul<Vec3i<SPACE>> for Vec3i<SPACE> {
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::MulAssign<&Vec3i<SPACE>> for Vec3i<SPACE> {
     fn mul_assign(&mut self, rhs: &Vec3i<SPACE>) {
         let lhs = self;
         {
             (|a: &mut Vec3i<SPACE>, b: &Vec3i<SPACE>| {
-                {
-                    a.x *= b.x;
-                    a.y *= b.y;
-                    a.z *= b.z;
-                }
+                a.x *= b.x;
+                a.y *= b.y;
+                a.z *= b.z;
             })(lhs, rhs);
         }
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::MulAssign<Vec3i<SPACE>> for Vec3i<SPACE> {
     fn mul_assign(&mut self, rhs: Vec3i<SPACE>) {
         let lhs = self;
         {
             (|a: &mut Vec3i<SPACE>, b: &Vec3i<SPACE>| {
-                {
-                    a.x *= b.x;
-                    a.y *= b.y;
-                    a.z *= b.z;
-                }
+                a.x *= b.x;
+                a.y *= b.y;
+                a.z *= b.z;
             })(lhs, &rhs);
         }
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::Div<&Vec3i<SPACE>> for &Vec3i<SPACE> {
     type Output = Vec3i<SPACE>;
     fn div(self, rhs: &Vec3i<SPACE>) -> Self::Output {
@@ -280,6 +288,7 @@ impl<SPACE: CoordinateSpace> std::ops::Div<&Vec3i<SPACE>> for &Vec3i<SPACE> {
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::Div<Vec3i<SPACE>> for &Vec3i<SPACE> {
     type Output = Vec3i<SPACE>;
     fn div(self, rhs: Vec3i<SPACE>) -> Self::Output {
@@ -290,6 +299,7 @@ impl<SPACE: CoordinateSpace> std::ops::Div<Vec3i<SPACE>> for &Vec3i<SPACE> {
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::Div<&Vec3i<SPACE>> for Vec3i<SPACE> {
     type Output = Vec3i<SPACE>;
     fn div(self, rhs: &Vec3i<SPACE>) -> Self::Output {
@@ -300,6 +310,7 @@ impl<SPACE: CoordinateSpace> std::ops::Div<&Vec3i<SPACE>> for Vec3i<SPACE> {
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::Div<Vec3i<SPACE>> for Vec3i<SPACE> {
     type Output = Vec3i<SPACE>;
     fn div(self, rhs: Vec3i<SPACE>) -> Self::Output {
@@ -310,36 +321,35 @@ impl<SPACE: CoordinateSpace> std::ops::Div<Vec3i<SPACE>> for Vec3i<SPACE> {
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::DivAssign<&Vec3i<SPACE>> for Vec3i<SPACE> {
     fn div_assign(&mut self, rhs: &Vec3i<SPACE>) {
         let lhs = self;
         {
             (|a: &mut Vec3i<SPACE>, b: &Vec3i<SPACE>| {
-                {
-                    a.x /= b.x;
-                    a.y /= b.y;
-                    a.z /= b.z;
-                }
+                a.x /= b.x;
+                a.y /= b.y;
+                a.z /= b.z;
             })(lhs, rhs);
         }
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::DivAssign<Vec3i<SPACE>> for Vec3i<SPACE> {
     fn div_assign(&mut self, rhs: Vec3i<SPACE>) {
         let lhs = self;
         {
             (|a: &mut Vec3i<SPACE>, b: &Vec3i<SPACE>| {
-                {
-                    a.x /= b.x;
-                    a.y /= b.y;
-                    a.z /= b.z;
-                }
+                a.x /= b.x;
+                a.y /= b.y;
+                a.z /= b.z;
             })(lhs, &rhs);
         }
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::Add<&i32> for &Vec3i<SPACE> {
     type Output = Vec3i<SPACE>;
     fn add(self, rhs: &i32) -> Self::Output {
@@ -350,6 +360,7 @@ impl<SPACE: CoordinateSpace> std::ops::Add<&i32> for &Vec3i<SPACE> {
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::Add<i32> for &Vec3i<SPACE> {
     type Output = Vec3i<SPACE>;
     fn add(self, rhs: i32) -> Self::Output {
@@ -360,6 +371,7 @@ impl<SPACE: CoordinateSpace> std::ops::Add<i32> for &Vec3i<SPACE> {
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::Add<&i32> for Vec3i<SPACE> {
     type Output = Vec3i<SPACE>;
     fn add(self, rhs: &i32) -> Self::Output {
@@ -370,6 +382,7 @@ impl<SPACE: CoordinateSpace> std::ops::Add<&i32> for Vec3i<SPACE> {
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::Add<i32> for Vec3i<SPACE> {
     type Output = Vec3i<SPACE>;
     fn add(self, rhs: i32) -> Self::Output {
@@ -380,36 +393,35 @@ impl<SPACE: CoordinateSpace> std::ops::Add<i32> for Vec3i<SPACE> {
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::AddAssign<&i32> for Vec3i<SPACE> {
     fn add_assign(&mut self, rhs: &i32) {
         let lhs = self;
         {
             (|a: &mut Vec3i<SPACE>, b: &i32| {
-                {
-                    a.x += b;
-                    a.y += b;
-                    a.z += b;
-                }
+                a.x += b;
+                a.y += b;
+                a.z += b;
             })(lhs, rhs);
         }
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::AddAssign<i32> for Vec3i<SPACE> {
     fn add_assign(&mut self, rhs: i32) {
         let lhs = self;
         {
             (|a: &mut Vec3i<SPACE>, b: &i32| {
-                {
-                    a.x += b;
-                    a.y += b;
-                    a.z += b;
-                }
+                a.x += b;
+                a.y += b;
+                a.z += b;
             })(lhs, &rhs);
         }
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::Sub<&i32> for &Vec3i<SPACE> {
     type Output = Vec3i<SPACE>;
     fn sub(self, rhs: &i32) -> Self::Output {
@@ -420,6 +432,7 @@ impl<SPACE: CoordinateSpace> std::ops::Sub<&i32> for &Vec3i<SPACE> {
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::Sub<i32> for &Vec3i<SPACE> {
     type Output = Vec3i<SPACE>;
     fn sub(self, rhs: i32) -> Self::Output {
@@ -430,6 +443,7 @@ impl<SPACE: CoordinateSpace> std::ops::Sub<i32> for &Vec3i<SPACE> {
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::Sub<&i32> for Vec3i<SPACE> {
     type Output = Vec3i<SPACE>;
     fn sub(self, rhs: &i32) -> Self::Output {
@@ -440,6 +454,7 @@ impl<SPACE: CoordinateSpace> std::ops::Sub<&i32> for Vec3i<SPACE> {
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::Sub<i32> for Vec3i<SPACE> {
     type Output = Vec3i<SPACE>;
     fn sub(self, rhs: i32) -> Self::Output {
@@ -450,36 +465,35 @@ impl<SPACE: CoordinateSpace> std::ops::Sub<i32> for Vec3i<SPACE> {
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::SubAssign<&i32> for Vec3i<SPACE> {
     fn sub_assign(&mut self, rhs: &i32) {
         let lhs = self;
         {
             (|a: &mut Vec3i<SPACE>, b: &i32| {
-                {
-                    a.x -= b;
-                    a.y -= b;
-                    a.z -= b;
-                }
+                a.x -= b;
+                a.y -= b;
+                a.z -= b;
             })(lhs, rhs);
         }
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::SubAssign<i32> for Vec3i<SPACE> {
     fn sub_assign(&mut self, rhs: i32) {
         let lhs = self;
         {
             (|a: &mut Vec3i<SPACE>, b: &i32| {
-                {
-                    a.x -= b;
-                    a.y -= b;
-                    a.z -= b;
-                }
+                a.x -= b;
+                a.y -= b;
+                a.z -= b;
             })(lhs, &rhs);
         }
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::Mul<&i32> for &Vec3i<SPACE> {
     type Output = Vec3i<SPACE>;
     fn mul(self, rhs: &i32) -> Self::Output {
@@ -490,6 +504,7 @@ impl<SPACE: CoordinateSpace> std::ops::Mul<&i32> for &Vec3i<SPACE> {
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::Mul<i32> for &Vec3i<SPACE> {
     type Output = Vec3i<SPACE>;
     fn mul(self, rhs: i32) -> Self::Output {
@@ -500,6 +515,7 @@ impl<SPACE: CoordinateSpace> std::ops::Mul<i32> for &Vec3i<SPACE> {
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::Mul<&i32> for Vec3i<SPACE> {
     type Output = Vec3i<SPACE>;
     fn mul(self, rhs: &i32) -> Self::Output {
@@ -510,6 +526,7 @@ impl<SPACE: CoordinateSpace> std::ops::Mul<&i32> for Vec3i<SPACE> {
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::Mul<i32> for Vec3i<SPACE> {
     type Output = Vec3i<SPACE>;
     fn mul(self, rhs: i32) -> Self::Output {
@@ -520,36 +537,35 @@ impl<SPACE: CoordinateSpace> std::ops::Mul<i32> for Vec3i<SPACE> {
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::MulAssign<&i32> for Vec3i<SPACE> {
     fn mul_assign(&mut self, rhs: &i32) {
         let lhs = self;
         {
             (|a: &mut Vec3i<SPACE>, b: &i32| {
-                {
-                    a.x *= b;
-                    a.y *= b;
-                    a.z *= b;
-                }
+                a.x *= b;
+                a.y *= b;
+                a.z *= b;
             })(lhs, rhs);
         }
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::MulAssign<i32> for Vec3i<SPACE> {
     fn mul_assign(&mut self, rhs: i32) {
         let lhs = self;
         {
             (|a: &mut Vec3i<SPACE>, b: &i32| {
-                {
-                    a.x *= b;
-                    a.y *= b;
-                    a.z *= b;
-                }
+                a.x *= b;
+                a.y *= b;
+                a.z *= b;
             })(lhs, &rhs);
         }
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::Div<&i32> for &Vec3i<SPACE> {
     type Output = Vec3i<SPACE>;
     fn div(self, rhs: &i32) -> Self::Output {
@@ -560,6 +576,7 @@ impl<SPACE: CoordinateSpace> std::ops::Div<&i32> for &Vec3i<SPACE> {
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::Div<i32> for &Vec3i<SPACE> {
     type Output = Vec3i<SPACE>;
     fn div(self, rhs: i32) -> Self::Output {
@@ -570,6 +587,7 @@ impl<SPACE: CoordinateSpace> std::ops::Div<i32> for &Vec3i<SPACE> {
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::Div<&i32> for Vec3i<SPACE> {
     type Output = Vec3i<SPACE>;
     fn div(self, rhs: &i32) -> Self::Output {
@@ -580,6 +598,7 @@ impl<SPACE: CoordinateSpace> std::ops::Div<&i32> for Vec3i<SPACE> {
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::Div<i32> for Vec3i<SPACE> {
     type Output = Vec3i<SPACE>;
     fn div(self, rhs: i32) -> Self::Output {
@@ -590,36 +609,35 @@ impl<SPACE: CoordinateSpace> std::ops::Div<i32> for Vec3i<SPACE> {
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::DivAssign<&i32> for Vec3i<SPACE> {
     fn div_assign(&mut self, rhs: &i32) {
         let lhs = self;
         {
             (|a: &mut Vec3i<SPACE>, b: &i32| {
-                {
-                    a.x /= b;
-                    a.y /= b;
-                    a.z /= b;
-                }
+                a.x /= b;
+                a.y /= b;
+                a.z /= b;
             })(lhs, rhs);
         }
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::DivAssign<i32> for Vec3i<SPACE> {
     fn div_assign(&mut self, rhs: i32) {
         let lhs = self;
         {
             (|a: &mut Vec3i<SPACE>, b: &i32| {
-                {
-                    a.x /= b;
-                    a.y /= b;
-                    a.z /= b;
-                }
+                a.x /= b;
+                a.y /= b;
+                a.z /= b;
             })(lhs, &rhs);
         }
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::BitAnd<&Vec3i<SPACE>> for &Vec3i<SPACE> {
     type Output = Vec3i<SPACE>;
     fn bitand(self, rhs: &Vec3i<SPACE>) -> Self::Output {
@@ -630,6 +648,7 @@ impl<SPACE: CoordinateSpace> std::ops::BitAnd<&Vec3i<SPACE>> for &Vec3i<SPACE> {
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::BitAnd<Vec3i<SPACE>> for &Vec3i<SPACE> {
     type Output = Vec3i<SPACE>;
     fn bitand(self, rhs: Vec3i<SPACE>) -> Self::Output {
@@ -640,6 +659,7 @@ impl<SPACE: CoordinateSpace> std::ops::BitAnd<Vec3i<SPACE>> for &Vec3i<SPACE> {
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::BitAnd<&Vec3i<SPACE>> for Vec3i<SPACE> {
     type Output = Vec3i<SPACE>;
     fn bitand(self, rhs: &Vec3i<SPACE>) -> Self::Output {
@@ -650,6 +670,7 @@ impl<SPACE: CoordinateSpace> std::ops::BitAnd<&Vec3i<SPACE>> for Vec3i<SPACE> {
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::BitAnd<Vec3i<SPACE>> for Vec3i<SPACE> {
     type Output = Vec3i<SPACE>;
     fn bitand(self, rhs: Vec3i<SPACE>) -> Self::Output {
@@ -660,36 +681,35 @@ impl<SPACE: CoordinateSpace> std::ops::BitAnd<Vec3i<SPACE>> for Vec3i<SPACE> {
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::BitAndAssign<&Vec3i<SPACE>> for Vec3i<SPACE> {
     fn bitand_assign(&mut self, rhs: &Vec3i<SPACE>) {
         let lhs = self;
         {
             (|a: &mut Vec3i<SPACE>, b: &Vec3i<SPACE>| {
-                {
-                    a.x &= b.x;
-                    a.y &= b.y;
-                    a.z &= b.z;
-                }
+                a.x &= b.x;
+                a.y &= b.y;
+                a.z &= b.z;
             })(lhs, rhs);
         }
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::BitAndAssign<Vec3i<SPACE>> for Vec3i<SPACE> {
     fn bitand_assign(&mut self, rhs: Vec3i<SPACE>) {
         let lhs = self;
         {
             (|a: &mut Vec3i<SPACE>, b: &Vec3i<SPACE>| {
-                {
-                    a.x &= b.x;
-                    a.y &= b.y;
-                    a.z &= b.z;
-                }
+                a.x &= b.x;
+                a.y &= b.y;
+                a.z &= b.z;
             })(lhs, &rhs);
         }
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::BitOr<&Vec3i<SPACE>> for &Vec3i<SPACE> {
     type Output = Vec3i<SPACE>;
     fn bitor(self, rhs: &Vec3i<SPACE>) -> Self::Output {
@@ -700,6 +720,7 @@ impl<SPACE: CoordinateSpace> std::ops::BitOr<&Vec3i<SPACE>> for &Vec3i<SPACE> {
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::BitOr<Vec3i<SPACE>> for &Vec3i<SPACE> {
     type Output = Vec3i<SPACE>;
     fn bitor(self, rhs: Vec3i<SPACE>) -> Self::Output {
@@ -710,6 +731,7 @@ impl<SPACE: CoordinateSpace> std::ops::BitOr<Vec3i<SPACE>> for &Vec3i<SPACE> {
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::BitOr<&Vec3i<SPACE>> for Vec3i<SPACE> {
     type Output = Vec3i<SPACE>;
     fn bitor(self, rhs: &Vec3i<SPACE>) -> Self::Output {
@@ -720,6 +742,7 @@ impl<SPACE: CoordinateSpace> std::ops::BitOr<&Vec3i<SPACE>> for Vec3i<SPACE> {
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::BitOr<Vec3i<SPACE>> for Vec3i<SPACE> {
     type Output = Vec3i<SPACE>;
     fn bitor(self, rhs: Vec3i<SPACE>) -> Self::Output {
@@ -730,36 +753,35 @@ impl<SPACE: CoordinateSpace> std::ops::BitOr<Vec3i<SPACE>> for Vec3i<SPACE> {
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::BitOrAssign<&Vec3i<SPACE>> for Vec3i<SPACE> {
     fn bitor_assign(&mut self, rhs: &Vec3i<SPACE>) {
         let lhs = self;
         {
             (|a: &mut Vec3i<SPACE>, b: &Vec3i<SPACE>| {
-                {
-                    a.x |= b.x;
-                    a.y |= b.y;
-                    a.z |= b.z;
-                }
+                a.x |= b.x;
+                a.y |= b.y;
+                a.z |= b.z;
             })(lhs, rhs);
         }
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::BitOrAssign<Vec3i<SPACE>> for Vec3i<SPACE> {
     fn bitor_assign(&mut self, rhs: Vec3i<SPACE>) {
         let lhs = self;
         {
             (|a: &mut Vec3i<SPACE>, b: &Vec3i<SPACE>| {
-                {
-                    a.x |= b.x;
-                    a.y |= b.y;
-                    a.z |= b.z;
-                }
+                a.x |= b.x;
+                a.y |= b.y;
+                a.z |= b.z;
             })(lhs, &rhs);
         }
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::Shl<&Vec3i<SPACE>> for &Vec3i<SPACE> {
     type Output = Vec3i<SPACE>;
     fn shl(self, rhs: &Vec3i<SPACE>) -> Self::Output {
@@ -770,6 +792,7 @@ impl<SPACE: CoordinateSpace> std::ops::Shl<&Vec3i<SPACE>> for &Vec3i<SPACE> {
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::Shl<Vec3i<SPACE>> for &Vec3i<SPACE> {
     type Output = Vec3i<SPACE>;
     fn shl(self, rhs: Vec3i<SPACE>) -> Self::Output {
@@ -780,6 +803,7 @@ impl<SPACE: CoordinateSpace> std::ops::Shl<Vec3i<SPACE>> for &Vec3i<SPACE> {
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::Shl<&Vec3i<SPACE>> for Vec3i<SPACE> {
     type Output = Vec3i<SPACE>;
     fn shl(self, rhs: &Vec3i<SPACE>) -> Self::Output {
@@ -790,6 +814,7 @@ impl<SPACE: CoordinateSpace> std::ops::Shl<&Vec3i<SPACE>> for Vec3i<SPACE> {
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::Shl<Vec3i<SPACE>> for Vec3i<SPACE> {
     type Output = Vec3i<SPACE>;
     fn shl(self, rhs: Vec3i<SPACE>) -> Self::Output {
@@ -800,36 +825,35 @@ impl<SPACE: CoordinateSpace> std::ops::Shl<Vec3i<SPACE>> for Vec3i<SPACE> {
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::ShlAssign<&Vec3i<SPACE>> for Vec3i<SPACE> {
     fn shl_assign(&mut self, rhs: &Vec3i<SPACE>) {
         let lhs = self;
         {
             (|a: &mut Vec3i<SPACE>, b: &Vec3i<SPACE>| {
-                {
-                    a.x <<= b.x;
-                    a.y <<= b.y;
-                    a.z <<= b.z;
-                }
+                a.x <<= b.x;
+                a.y <<= b.y;
+                a.z <<= b.z;
             })(lhs, rhs);
         }
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::ShlAssign<Vec3i<SPACE>> for Vec3i<SPACE> {
     fn shl_assign(&mut self, rhs: Vec3i<SPACE>) {
         let lhs = self;
         {
             (|a: &mut Vec3i<SPACE>, b: &Vec3i<SPACE>| {
-                {
-                    a.x <<= b.x;
-                    a.y <<= b.y;
-                    a.z <<= b.z;
-                }
+                a.x <<= b.x;
+                a.y <<= b.y;
+                a.z <<= b.z;
             })(lhs, &rhs);
         }
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::Shr<&Vec3i<SPACE>> for &Vec3i<SPACE> {
     type Output = Vec3i<SPACE>;
     fn shr(self, rhs: &Vec3i<SPACE>) -> Self::Output {
@@ -840,6 +864,7 @@ impl<SPACE: CoordinateSpace> std::ops::Shr<&Vec3i<SPACE>> for &Vec3i<SPACE> {
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::Shr<Vec3i<SPACE>> for &Vec3i<SPACE> {
     type Output = Vec3i<SPACE>;
     fn shr(self, rhs: Vec3i<SPACE>) -> Self::Output {
@@ -850,6 +875,7 @@ impl<SPACE: CoordinateSpace> std::ops::Shr<Vec3i<SPACE>> for &Vec3i<SPACE> {
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::Shr<&Vec3i<SPACE>> for Vec3i<SPACE> {
     type Output = Vec3i<SPACE>;
     fn shr(self, rhs: &Vec3i<SPACE>) -> Self::Output {
@@ -860,6 +886,7 @@ impl<SPACE: CoordinateSpace> std::ops::Shr<&Vec3i<SPACE>> for Vec3i<SPACE> {
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::Shr<Vec3i<SPACE>> for Vec3i<SPACE> {
     type Output = Vec3i<SPACE>;
     fn shr(self, rhs: Vec3i<SPACE>) -> Self::Output {
@@ -870,36 +897,35 @@ impl<SPACE: CoordinateSpace> std::ops::Shr<Vec3i<SPACE>> for Vec3i<SPACE> {
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::ShrAssign<&Vec3i<SPACE>> for Vec3i<SPACE> {
     fn shr_assign(&mut self, rhs: &Vec3i<SPACE>) {
         let lhs = self;
         {
             (|a: &mut Vec3i<SPACE>, b: &Vec3i<SPACE>| {
-                {
-                    a.x >>= b.x;
-                    a.y >>= b.y;
-                    a.z >>= b.z;
-                }
+                a.x >>= b.x;
+                a.y >>= b.y;
+                a.z >>= b.z;
             })(lhs, rhs);
         }
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::ShrAssign<Vec3i<SPACE>> for Vec3i<SPACE> {
     fn shr_assign(&mut self, rhs: Vec3i<SPACE>) {
         let lhs = self;
         {
             (|a: &mut Vec3i<SPACE>, b: &Vec3i<SPACE>| {
-                {
-                    a.x >>= b.x;
-                    a.y >>= b.y;
-                    a.z >>= b.z;
-                }
+                a.x >>= b.x;
+                a.y >>= b.y;
+                a.z >>= b.z;
             })(lhs, &rhs);
         }
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::Not for Vec3i<SPACE> {
     type Output = Vec3i<SPACE>;
     fn not(self) -> Self::Output {
@@ -908,6 +934,7 @@ impl<SPACE: CoordinateSpace> std::ops::Not for Vec3i<SPACE> {
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::BitAnd<&i32> for &Vec3i<SPACE> {
     type Output = Vec3i<SPACE>;
     fn bitand(self, rhs: &i32) -> Self::Output {
@@ -918,6 +945,7 @@ impl<SPACE: CoordinateSpace> std::ops::BitAnd<&i32> for &Vec3i<SPACE> {
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::BitAnd<i32> for &Vec3i<SPACE> {
     type Output = Vec3i<SPACE>;
     fn bitand(self, rhs: i32) -> Self::Output {
@@ -928,6 +956,7 @@ impl<SPACE: CoordinateSpace> std::ops::BitAnd<i32> for &Vec3i<SPACE> {
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::BitAnd<&i32> for Vec3i<SPACE> {
     type Output = Vec3i<SPACE>;
     fn bitand(self, rhs: &i32) -> Self::Output {
@@ -938,6 +967,7 @@ impl<SPACE: CoordinateSpace> std::ops::BitAnd<&i32> for Vec3i<SPACE> {
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::BitAnd<i32> for Vec3i<SPACE> {
     type Output = Vec3i<SPACE>;
     fn bitand(self, rhs: i32) -> Self::Output {
@@ -948,36 +978,35 @@ impl<SPACE: CoordinateSpace> std::ops::BitAnd<i32> for Vec3i<SPACE> {
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::BitAndAssign<&i32> for Vec3i<SPACE> {
     fn bitand_assign(&mut self, rhs: &i32) {
         let lhs = self;
         {
             (|a: &mut Vec3i<SPACE>, b: &i32| {
-                {
-                    a.x &= b;
-                    a.y &= b;
-                    a.z &= b;
-                }
+                a.x &= b;
+                a.y &= b;
+                a.z &= b;
             })(lhs, rhs);
         }
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::BitAndAssign<i32> for Vec3i<SPACE> {
     fn bitand_assign(&mut self, rhs: i32) {
         let lhs = self;
         {
             (|a: &mut Vec3i<SPACE>, b: &i32| {
-                {
-                    a.x &= b;
-                    a.y &= b;
-                    a.z &= b;
-                }
+                a.x &= b;
+                a.y &= b;
+                a.z &= b;
             })(lhs, &rhs);
         }
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::BitOr<&i32> for &Vec3i<SPACE> {
     type Output = Vec3i<SPACE>;
     fn bitor(self, rhs: &i32) -> Self::Output {
@@ -988,6 +1017,7 @@ impl<SPACE: CoordinateSpace> std::ops::BitOr<&i32> for &Vec3i<SPACE> {
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::BitOr<i32> for &Vec3i<SPACE> {
     type Output = Vec3i<SPACE>;
     fn bitor(self, rhs: i32) -> Self::Output {
@@ -998,6 +1028,7 @@ impl<SPACE: CoordinateSpace> std::ops::BitOr<i32> for &Vec3i<SPACE> {
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::BitOr<&i32> for Vec3i<SPACE> {
     type Output = Vec3i<SPACE>;
     fn bitor(self, rhs: &i32) -> Self::Output {
@@ -1008,6 +1039,7 @@ impl<SPACE: CoordinateSpace> std::ops::BitOr<&i32> for Vec3i<SPACE> {
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::BitOr<i32> for Vec3i<SPACE> {
     type Output = Vec3i<SPACE>;
     fn bitor(self, rhs: i32) -> Self::Output {
@@ -1018,36 +1050,35 @@ impl<SPACE: CoordinateSpace> std::ops::BitOr<i32> for Vec3i<SPACE> {
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::BitOrAssign<&i32> for Vec3i<SPACE> {
     fn bitor_assign(&mut self, rhs: &i32) {
         let lhs = self;
         {
             (|a: &mut Vec3i<SPACE>, b: &i32| {
-                {
-                    a.x |= b;
-                    a.y |= b;
-                    a.z |= b;
-                }
+                a.x |= b;
+                a.y |= b;
+                a.z |= b;
             })(lhs, rhs);
         }
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::BitOrAssign<i32> for Vec3i<SPACE> {
     fn bitor_assign(&mut self, rhs: i32) {
         let lhs = self;
         {
             (|a: &mut Vec3i<SPACE>, b: &i32| {
-                {
-                    a.x |= b;
-                    a.y |= b;
-                    a.z |= b;
-                }
+                a.x |= b;
+                a.y |= b;
+                a.z |= b;
             })(lhs, &rhs);
         }
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::Shl<&i32> for &Vec3i<SPACE> {
     type Output = Vec3i<SPACE>;
     fn shl(self, rhs: &i32) -> Self::Output {
@@ -1058,6 +1089,7 @@ impl<SPACE: CoordinateSpace> std::ops::Shl<&i32> for &Vec3i<SPACE> {
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::Shl<i32> for &Vec3i<SPACE> {
     type Output = Vec3i<SPACE>;
     fn shl(self, rhs: i32) -> Self::Output {
@@ -1068,6 +1100,7 @@ impl<SPACE: CoordinateSpace> std::ops::Shl<i32> for &Vec3i<SPACE> {
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::Shl<&i32> for Vec3i<SPACE> {
     type Output = Vec3i<SPACE>;
     fn shl(self, rhs: &i32) -> Self::Output {
@@ -1078,6 +1111,7 @@ impl<SPACE: CoordinateSpace> std::ops::Shl<&i32> for Vec3i<SPACE> {
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::Shl<i32> for Vec3i<SPACE> {
     type Output = Vec3i<SPACE>;
     fn shl(self, rhs: i32) -> Self::Output {
@@ -1088,36 +1122,35 @@ impl<SPACE: CoordinateSpace> std::ops::Shl<i32> for Vec3i<SPACE> {
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::ShlAssign<&i32> for Vec3i<SPACE> {
     fn shl_assign(&mut self, rhs: &i32) {
         let lhs = self;
         {
             (|a: &mut Vec3i<SPACE>, b: &i32| {
-                {
-                    a.x <<= b;
-                    a.y <<= b;
-                    a.z <<= b;
-                }
+                a.x <<= b;
+                a.y <<= b;
+                a.z <<= b;
             })(lhs, rhs);
         }
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::ShlAssign<i32> for Vec3i<SPACE> {
     fn shl_assign(&mut self, rhs: i32) {
         let lhs = self;
         {
             (|a: &mut Vec3i<SPACE>, b: &i32| {
-                {
-                    a.x <<= b;
-                    a.y <<= b;
-                    a.z <<= b;
-                }
+                a.x <<= b;
+                a.y <<= b;
+                a.z <<= b;
             })(lhs, &rhs);
         }
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::Shr<&i32> for &Vec3i<SPACE> {
     type Output = Vec3i<SPACE>;
     fn shr(self, rhs: &i32) -> Self::Output {
@@ -1128,6 +1161,7 @@ impl<SPACE: CoordinateSpace> std::ops::Shr<&i32> for &Vec3i<SPACE> {
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::Shr<i32> for &Vec3i<SPACE> {
     type Output = Vec3i<SPACE>;
     fn shr(self, rhs: i32) -> Self::Output {
@@ -1138,6 +1172,7 @@ impl<SPACE: CoordinateSpace> std::ops::Shr<i32> for &Vec3i<SPACE> {
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::Shr<&i32> for Vec3i<SPACE> {
     type Output = Vec3i<SPACE>;
     fn shr(self, rhs: &i32) -> Self::Output {
@@ -1148,6 +1183,7 @@ impl<SPACE: CoordinateSpace> std::ops::Shr<&i32> for Vec3i<SPACE> {
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::Shr<i32> for Vec3i<SPACE> {
     type Output = Vec3i<SPACE>;
     fn shr(self, rhs: i32) -> Self::Output {
@@ -1158,31 +1194,29 @@ impl<SPACE: CoordinateSpace> std::ops::Shr<i32> for Vec3i<SPACE> {
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::ShrAssign<&i32> for Vec3i<SPACE> {
     fn shr_assign(&mut self, rhs: &i32) {
         let lhs = self;
         {
             (|a: &mut Vec3i<SPACE>, b: &i32| {
-                {
-                    a.x >>= b;
-                    a.y >>= b;
-                    a.z >>= b;
-                }
+                a.x >>= b;
+                a.y >>= b;
+                a.z >>= b;
             })(lhs, rhs);
         }
     }
 }
 
+#[allow(clippy::redundant_closure_call)]
 impl<SPACE: CoordinateSpace> std::ops::ShrAssign<i32> for Vec3i<SPACE> {
     fn shr_assign(&mut self, rhs: i32) {
         let lhs = self;
         {
             (|a: &mut Vec3i<SPACE>, b: &i32| {
-                {
-                    a.x >>= b;
-                    a.y >>= b;
-                    a.z >>= b;
-                }
+                a.x >>= b;
+                a.y >>= b;
+                a.z >>= b;
             })(lhs, &rhs);
         }
     }

@@ -105,16 +105,16 @@ impl AnvilRegionReader {
 impl Reader<MinecraftChunkLocation, AnvilChunkData> for AnvilRegionReader {
     fn load_all_chunks<F>(&mut self, data_consumer: F) -> Result<(), ReadError>
     where
-        F: Fn(AnvilChunkData) -> (),
+        F: Fn(AnvilChunkData),
     {
         let paths = std::fs::read_dir(&self.region_location)?;
-        for path in paths {
+        paths.for_each(|path| {
             if let Ok(dir_entry) = path {
                 let path = dir_entry.path();
                 if path.extension().and_then(std::ffi::OsStr::to_str).unwrap_or("") == "mca" {
                     let file_name = match path.file_name().and_then(std::ffi::OsStr::to_str) {
                         Some(name) => name,
-                        None => continue,
+                        None => return,
                     };
                     if let Some(region_pos) = RegionPos2d::from(file_name) {
                         match self.read_region(region_pos) {
@@ -127,7 +127,7 @@ impl Reader<MinecraftChunkLocation, AnvilChunkData> for AnvilRegionReader {
                                         let i = x + z * RegionPos2d::DIAMETER_IN_CHUNKS;
                                         if let Some((start, end)) = indices[i] {
                                             data_consumer(AnvilChunkData {
-                                                data: (&data[start..end]).to_vec(),
+                                                data: data[start..end].to_vec(),
                                                 position: region_pos.to_minecraft_chunk_location_offset(x as i32, z as i32),
                                             });
                                         }
@@ -139,7 +139,7 @@ impl Reader<MinecraftChunkLocation, AnvilChunkData> for AnvilRegionReader {
                     }
                 }
             }
-        }
+        });
         Ok(())
     }
 }
