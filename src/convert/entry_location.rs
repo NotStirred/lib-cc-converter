@@ -19,6 +19,7 @@ impl EntryLocation3d {
     const LOC_BITS: usize = 4;
     const LOC_BITMASK: usize = (1 << Self::LOC_BITS) - 1;
     pub const ENTRIES_PER_REGION: usize = (1 << Self::LOC_BITS) * (1 << Self::LOC_BITS) * (1 << Self::LOC_BITS);
+    pub const SECTOR_SIZE: usize = 512;
 }
 
 impl Key<RegionPos3d> for EntryLocation3d {
@@ -48,7 +49,8 @@ pub type EntryLocation2d = Vec2i<EntryLocation2dSpace>;
 impl EntryLocation2d {
     const LOC_BITS: usize = 5;
     const LOC_BITMASK: usize = (1 << Self::LOC_BITS) - 1;
-    const ENTRIES_PER_REGION: usize = (1 << Self::LOC_BITS) * (1 << Self::LOC_BITS);
+    pub const ENTRIES_PER_REGION: usize = (1 << Self::LOC_BITS) * (1 << Self::LOC_BITS);
+    pub const SECTOR_SIZE: usize = 4096;
 }
 
 impl Key<RegionPos2d> for EntryLocation2d {
@@ -72,7 +74,7 @@ pub type MinecraftChunkLocation = Vec2i<MinecraftChunkSpace>;
 impl MinecraftChunkLocation {
     const LOC_BITS: usize = 5;
     const LOC_BITMASK: usize = (1 << Self::LOC_BITS) - 1;
-    const ENTRIES_PER_REGION: usize = (1 << Self::LOC_BITS) * (1 << Self::LOC_BITS);
+    pub const ENTRIES_PER_REGION: usize = (1 << Self::LOC_BITS) * (1 << Self::LOC_BITS);
 
     pub fn to_entry_location_2d(self) -> EntryLocation2d {
         EntryLocation2d {

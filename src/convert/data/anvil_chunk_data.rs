@@ -1,6 +1,7 @@
 use crate::convert::entry_location::MinecraftChunkLocation;
 
-pub struct AnvilChunkData<'a> {
+#[derive(Clone)]
+pub struct AnvilChunkData {
     pub position: MinecraftChunkLocation,
-    pub data: &'a [u8],
+    pub data: Vec<u8>,
 }

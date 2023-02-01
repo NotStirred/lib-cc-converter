@@ -1,5 +1,6 @@
 use crate::convert::entry_location::EntryLocation2d;
 
+#[derive(Clone)]
 pub struct CubicChunks112Data {
     pub position: EntryLocation2d,
     pub column_data: Vec<u8>,
