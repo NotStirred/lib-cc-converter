@@ -1,4 +1,4 @@
-use once_cell::unsync::Lazy;
+use lazy_static::lazy_static;
 use regex::Regex;
 
 use crate::convert::entry_location::RegionKey;
@@ -78,9 +78,11 @@ pub struct RegionSpace2d {}
 impl CoordinateSpace for RegionSpace2d {}
 pub type RegionPos2d = Vec2i<RegionSpace2d>;
 
-impl RegionPos2d {
-    const FORMAT_REGEX: Lazy<Regex> = Lazy::new(|| Regex::new(r"r\.\-?\d*\.\-?\d*\.mca$").unwrap());
+lazy_static! {
+    static ref FORMAT_REGEX: Regex = Regex::new(r"r\.\-?\d*\.\-?\d*\.mca$").unwrap();
+}
 
+impl RegionPos2d {
     pub const DIAMETER_IN_CHUNKS: usize = 32;
     pub const CHUNKS_COUNT: usize = Self::DIAMETER_IN_CHUNKS * Self::DIAMETER_IN_CHUNKS;
 
@@ -96,7 +98,7 @@ impl RegionPos2d {
     }
 
     pub fn is_valid(filename: &str) -> bool {
-        Self::FORMAT_REGEX.is_match(filename)
+        FORMAT_REGEX.is_match(filename)
     }
 
     pub fn from(filename: &str) -> Option<RegionPos2d> {
