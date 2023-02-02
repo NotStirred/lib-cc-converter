@@ -14,9 +14,9 @@ mod tests {
     use crate::util::test_utils;
 
     #[test]
-    fn simple_region_test() {
-        let src_path = test_utils::test_resources_path().join("simple_region_test");
-        let dst_path = test_utils::test_resources_path().join("simple_region_test/out");
+    fn anvil2cc_test() {
+        let src_path = test_utils::test_resources_path().join("anvil2cc");
+        let dst_path = test_utils::test_resources_path().join("anvil2cc/out");
 
         let reader = AnvilRegionReader::new(&src_path);
         let converter = Anvil2CCConverter::new(true);
