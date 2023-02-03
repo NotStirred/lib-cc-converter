@@ -9,7 +9,7 @@ mod tests {
 
     use crate::convert::converter::run_conversion;
     use crate::io::anvil_region_reader::AnvilRegionReader;
-    use crate::io::cubic_chunks_writer::CubicChunksWriter;
+    use crate::io::cubic_region_writer::CubicRegionWriter;
 
     use crate::util::test_utils;
 
@@ -20,7 +20,7 @@ mod tests {
 
         let reader = AnvilRegionReader::new(&src_path);
         let converter = Anvil2CCConverter::new(true);
-        let writer = CubicChunksWriter::new(&dst_path, 64).unwrap();
+        let writer = CubicRegionWriter::new(&dst_path, 64).unwrap();
 
         run_conversion(reader, converter, writer);
     }
