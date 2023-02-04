@@ -1,7 +1,7 @@
 use lazy_static::lazy_static;
 use regex::Regex;
 
-use crate::convert::entry_location::RegionKey;
+use crate::convert::entry_location::{RegionKey, RegionPos};
 use crate::util::vec::vec2i::Vec2i;
 use crate::util::vec::vec3i::Vec3i;
 use crate::util::vec::CoordinateSpace;
@@ -93,15 +93,13 @@ impl RegionPos2d {
         ChunkPos::new((self.x << 5) + local_x, (self.z << 5) + local_z)
     }
 
-    pub fn region_key(&self) -> RegionKey {
-        format!("r.{}.{}.mca", self.x, self.z)
-    }
-
     pub fn is_valid(filename: &str) -> bool {
         FORMAT_REGEX.is_match(filename)
     }
+}
 
-    pub fn from(filename: &str) -> Option<RegionPos2d> {
+impl RegionPos for RegionPos2d {
+    fn from_file_name(filename: &str) -> Option<Self> {
         if !Self::is_valid(filename) {
             return None;
         }
@@ -117,5 +115,17 @@ impl RegionPos2d {
             }
         }
         None
+    }
+
+    fn diameter_in_chunks() -> usize {
+        Self::DIAMETER_IN_CHUNKS
+    }
+
+    fn entries_per_region() -> usize {
+        Self::CHUNKS_COUNT
+    }
+
+    fn region_key(&self) -> RegionKey {
+        format!("r.{}.{}.mca", self.x, self.z)
     }
 }

@@ -5,10 +5,23 @@ use crate::util::vec::CoordinateSpace;
 
 pub type RegionKey = String;
 
+pub trait RegionPos {
+    fn from_file_name(file_name: &str) -> Option<Self>
+    where
+        Self: Sized;
+
+    fn diameter_in_chunks() -> usize;
+    fn entries_per_region() -> usize;
+
+    fn region_key(&self) -> RegionKey;
+}
+
 pub trait Key<R> {
     fn to_region_pos(self) -> R;
     fn region_key(&self) -> RegionKey;
     fn id(&self) -> usize;
+
+    fn entries_per_region() -> usize;
 }
 
 pub struct EntryLocation3dSpace {}
@@ -40,6 +53,10 @@ impl Key<RegionPos3d> for EntryLocation3d {
             | ((self.y as usize & Self::LOC_BITMASK) << Self::LOC_BITS)
             | (self.z as usize & Self::LOC_BITMASK)
     }
+
+    fn entries_per_region() -> usize {
+        Self::ENTRIES_PER_REGION
+    }
 }
 
 pub struct EntryLocation2dSpace {}
@@ -64,6 +81,10 @@ impl Key<RegionPos2d> for EntryLocation2d {
 
     fn id(&self) -> usize {
         ((self.x as usize & Self::LOC_BITMASK) << Self::LOC_BITS) | (self.z as usize & Self::LOC_BITMASK)
+    }
+
+    fn entries_per_region() -> usize {
+        Self::ENTRIES_PER_REGION
     }
 }
 
@@ -105,5 +126,9 @@ impl Key<RegionPos2d> for MinecraftChunkLocation {
 
     fn id(&self) -> usize {
         ((self.x as usize & Self::LOC_BITMASK) << Self::LOC_BITS) | (self.z as usize & Self::LOC_BITMASK)
+    }
+
+    fn entries_per_region() -> usize {
+        Self::ENTRIES_PER_REGION
     }
 }
