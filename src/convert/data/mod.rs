@@ -1,2 +1,2 @@
-pub mod anvil_chunk_data;
-pub mod cubic_chunks_1_12;
+pub mod anvil;
+pub mod cc_1_12;

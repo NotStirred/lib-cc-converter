@@ -3,7 +3,7 @@ use std::path::Path;
 use crate::{
     convert::{
         converter::{WriteError, Writer},
-        data::cubic_chunks_1_12::CubicChunks112Data,
+        data::cc_1_12::CubicChunks112Data,
         entry_location::EntryLocation3d,
     },
     util::positions::RegionPos3d,

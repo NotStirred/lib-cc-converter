@@ -15,7 +15,7 @@ impl<SPACE: CoordinateSpace> Vec3i<SPACE> {
             x,
             y,
             z,
-            _phantom: Default::default(),
+            _phantom: PhantomData::default(),
         }
     }
 }
@@ -27,7 +27,7 @@ impl<SPACE: CoordinateSpace> Clone for Vec3i<SPACE> {
             x: self.x,
             y: self.y,
             z: self.z,
-            _phantom: Default::default(),
+            _phantom: PhantomData::default(),
         }
     }
 }

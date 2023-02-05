@@ -36,7 +36,7 @@ error_from!(RegionReadError, std::io::Error, Self::StdIo);
 impl Display for RegionReadError {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         match self {
-            RegionReadError::StdIo(err) => f.write_str(&format!("Error when reading region: {}", err)),
+            RegionReadError::StdIo(err) => f.write_str(&format!("Error when reading region: {err}")),
             RegionReadError::MissingHeader => f.write_str("Missing header in region"),
         }
     }
@@ -58,7 +58,7 @@ where
         }
     }
 
-    pub fn read_region(&self, position: POS) -> Result<RegionData, RegionReadError>
+    pub fn read_region(&self, position: &POS) -> Result<RegionData, RegionReadError>
     where
         POS: RegionPos,
     {
@@ -74,10 +74,10 @@ where
         for chunk_idx in 0..POS::entries_per_region() {
             let sector_offset = chunk_idx * 4;
 
-            let packed = (bytes[sector_offset + 3] as u32)
-                | (bytes[sector_offset + 2] as u32) << 8
-                | (bytes[sector_offset + 1] as u32) << 16
-                | (bytes[sector_offset] as u32) << 24;
+            let packed = u32::from(bytes[sector_offset + 3])
+                | u32::from(bytes[sector_offset + 2]) << 8
+                | u32::from(bytes[sector_offset + 1]) << 16
+                | u32::from(bytes[sector_offset]) << 24;
 
             let offset = (packed >> Self::SIZE_BITS) as usize;
             let size = (packed & Self::SIZE_MASK) as usize;
@@ -126,7 +126,7 @@ where
                         None => return,
                     };
                     if let Some(region_pos) = POS::from_file_name(file_name) {
-                        match self.read_region(region_pos) {
+                        match self.read_region(&region_pos) {
                             Ok(region_data) => {
                                 let chunks_data = (self.extract_chunks_function)(region_pos, region_data);
 
@@ -134,7 +134,7 @@ where
                                     data_consumer(data);
                                 }
                             }
-                            Err(err) => println!("Error reading region {}, skipping it.\n{}", file_name, err),
+                            Err(err) => println!("Error reading region {file_name}, skipping it.\n{err}"),
                         }
                     }
                 }

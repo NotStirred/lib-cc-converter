@@ -1,3 +1,5 @@
+use std::marker::PhantomData;
+
 use crate::util::positions::{RegionPos2d, RegionPos3d};
 use crate::util::vec::vec2i::Vec2i;
 use crate::util::vec::vec3i::Vec3i;
@@ -45,7 +47,7 @@ impl Key<RegionPos3d> for EntryLocation3d {
         let reg_y = self.y >> Self::LOC_BITS;
         let reg_z = self.z >> Self::LOC_BITS;
 
-        format!("{}.{}.{}.3dr", reg_x, reg_y, reg_z)
+        format!("{reg_x}.{reg_y}.{reg_z}.3dr")
     }
 
     fn id(&self) -> usize {
@@ -101,7 +103,7 @@ impl MinecraftChunkLocation {
         EntryLocation2d {
             x: self.x,
             z: self.z,
-            _phantom: Default::default(),
+            _phantom: PhantomData::default(),
         }
     }
 }

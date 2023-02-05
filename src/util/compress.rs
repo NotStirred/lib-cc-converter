@@ -9,7 +9,7 @@ pub fn read_compressed(data: &[u8]) -> Result<NbtCompound, NbtIoError> {
     let format = data[0];
     let data = &data[1..];
     if data.is_empty() {
-        return Err(NbtIoError::Custom(format!("Format: {}", format).into_boxed_str()));
+        return Err(NbtIoError::Custom(format!("Format: {format}").into_boxed_str()));
     }
 
     let (compound, _) = match format {
@@ -17,7 +17,7 @@ pub fn read_compressed(data: &[u8]) -> Result<NbtCompound, NbtIoError> {
         2 => quartz_nbt::io::read_nbt(&mut ZlibDecoder::new(data), Uncompressed),
         _ => {
             return Err(NbtIoError::Custom(
-                format!("Unrecognised compression format {}. (Valid options are: 1, 2)", format).into_boxed_str(),
+                format!("Unrecognised compression format {format}. (Valid options are: 1, 2)").into_boxed_str(),
             ));
         }
     }?;

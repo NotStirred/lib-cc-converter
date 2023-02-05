@@ -25,8 +25,8 @@ impl From<std::io::Error> for RegionWriteError {
 impl Display for RegionWriteError {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         match self {
-            RegionWriteError::StdIo(err) => f.write_str(&format!("Error when reading region: {}", err)),
-            RegionWriteError::MissingHeader(path) => f.write_str(&format!("Missing header in region {:?}", path)),
+            RegionWriteError::StdIo(err) => f.write_str(&format!("Error when reading region: {err}")),
+            RegionWriteError::MissingHeader(path) => f.write_str(&format!("Missing header in region {path:?}")),
         }
     }
 }
@@ -51,7 +51,7 @@ impl WriteRegion {
         }
     }
 
-    pub fn write<K, R>(&mut self, key: K, value: &[u8]) -> Result<(), RegionWriteError>
+    pub fn write<K, R>(&mut self, key: &K, value: &[u8]) -> Result<(), RegionWriteError>
     where
         K: Key<R>,
     {
@@ -154,10 +154,10 @@ impl WriteRegion {
     }
 
     fn unpack_size_offset(bytes: &[u8], sector_offset: usize) -> (u32, u32) {
-        let packed = (bytes[sector_offset + 3] as u32)
-            | (bytes[sector_offset + 2] as u32) << 8
-            | (bytes[sector_offset + 1] as u32) << 16
-            | (bytes[sector_offset] as u32) << 24;
+        let packed = u32::from(bytes[sector_offset + 3])
+            | u32::from(bytes[sector_offset + 2]) << 8
+            | u32::from(bytes[sector_offset + 1]) << 16
+            | u32::from(bytes[sector_offset]) << 24;
 
         let size = packed & Self::SIZE_MASK;
         let offset = packed >> Self::SIZE_BITS;

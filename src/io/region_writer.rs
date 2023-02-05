@@ -37,7 +37,7 @@ impl<REGION> CachingRegionWriter<REGION> {
         KEY: Key<REGION> + Copy,
     {
         if self.region_cache.len() > self.max_cache_size {
-            self.flush()?
+            self.flush()?;
         }
 
         let region = self.region_cache.entry(entry_location.to_region_pos()).or_insert_with(|| {
@@ -48,7 +48,7 @@ impl<REGION> CachingRegionWriter<REGION> {
             )
         });
 
-        region.write(entry_location, data)?;
+        region.write(&entry_location, data)?;
         Ok(())
     }
 

@@ -12,8 +12,8 @@ use quartz_nbt::io::NbtIoError;
 use quartz_nbt::NbtTag::{Byte, ByteArray, Compound, Int, IntArray, String};
 use quartz_nbt::{NbtCompound, NbtList, NbtReprError, NbtStructureError, NbtTag};
 
-use crate::convert::data::anvil_chunk_data::AnvilChunkData;
-use crate::convert::data::cubic_chunks_1_12::CubicChunks112Data;
+use crate::convert::data::anvil::Data;
+use crate::convert::data::cc_1_12::CubicChunks112Data;
 use crate::util::compress::{read_compressed, write_compressed};
 use crate::util::reinterpret::vec_u8_into_i8;
 
@@ -544,8 +544,8 @@ impl Anvil2CCConverter {
     }
 }
 
-impl Converter<AnvilChunkData, CubicChunks112Data> for Anvil2CCConverter {
-    fn convert(&self, src: AnvilChunkData) -> Result<Vec<CubicChunks112Data>, ConversionError> {
+impl Converter<Data, CubicChunks112Data> for Anvil2CCConverter {
+    fn convert(&self, src: Data) -> Result<Vec<CubicChunks112Data>, ConversionError> {
         let data = CubicChunks112Data::from_data(
             src.position.to_entry_location_2d(),
             self.extract_column_data(&src.data)?,

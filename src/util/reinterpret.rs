@@ -12,7 +12,7 @@ pub fn vec_u8_into_i8(v: Vec<u8>) -> Vec<i8> {
     let cap = v.capacity();
 
     // finally, adopt the data into a new Vec
-    unsafe { Vec::from_raw_parts(p as *mut i8, len, cap) }
+    unsafe { Vec::from_raw_parts(p.cast::<i8>(), len, cap) }
 }
 
 pub fn vec_i8_into_u8(v: Vec<i8>) -> Vec<u8> {
@@ -29,5 +29,5 @@ pub fn vec_i8_into_u8(v: Vec<i8>) -> Vec<u8> {
     let cap = v.capacity();
 
     // finally, adopt the data into a new Vec
-    unsafe { Vec::from_raw_parts(p as *mut u8, len, cap) }
+    unsafe { Vec::from_raw_parts(p.cast::<u8>(), len, cap) }
 }

@@ -1,10 +1,10 @@
 use std::path::Path;
 
-use crate::{convert::data::anvil_chunk_data::AnvilChunkData, util::positions::RegionPos2d};
+use crate::{convert::data::anvil::Data, util::positions::RegionPos2d};
 
 use super::region_reader::{RegionData, RegionReader};
 
-pub type AnvilRegionReader = RegionReader<RegionPos2d, fn(RegionPos2d, RegionData) -> Vec<AnvilChunkData>>;
+pub type AnvilRegionReader = RegionReader<RegionPos2d, fn(RegionPos2d, RegionData) -> Vec<Data>>;
 
 pub fn create_anvil_region_reader(path: &Path) -> AnvilRegionReader {
     RegionReader::new(path, |region_pos, region_data| {
@@ -16,10 +16,10 @@ pub fn create_anvil_region_reader(path: &Path) -> AnvilRegionReader {
             for z in 0..32 {
                 let i = x + z * RegionPos2d::DIAMETER_IN_CHUNKS;
                 if let Some((start, end)) = indices[i] {
-                    data_out.push(AnvilChunkData {
+                    data_out.push(Data {
                         position: region_pos.to_minecraft_chunk_location_offset(x as i32, z as i32),
                         data: data[start..end].to_vec(),
-                    })
+                    });
                 }
             }
         }

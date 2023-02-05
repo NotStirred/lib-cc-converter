@@ -3,7 +3,7 @@ use std::path::Path;
 use crate::{
     convert::{
         converter::{WriteError, Writer},
-        data::anvil_chunk_data::AnvilChunkData,
+        data::anvil::Data,
         entry_location::EntryLocation2d,
     },
     util::positions::RegionPos2d,
@@ -28,8 +28,8 @@ impl AnvilRegionWriter {
     }
 }
 
-impl Writer<AnvilChunkData> for AnvilRegionWriter {
-    fn write(&mut self, out_data: AnvilChunkData) -> Result<(), WriteError> {
+impl Writer<Data> for AnvilRegionWriter {
+    fn write(&mut self, out_data: Data) -> Result<(), WriteError> {
         let pos = EntryLocation2d::new(out_data.position.x, out_data.position.z);
         if let Err(err) = self.inner.write(pos, &out_data.data) {
             return Err(WriteError::Custom(Box::new(err)));

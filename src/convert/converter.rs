@@ -60,9 +60,9 @@ where
                     Err(err) => match err {
                         TrySendError::Full(returned_data) => {
                             data = returned_data;
-                            std::thread::yield_now()
+                            std::thread::yield_now();
                         }
-                        _ => break,
+                        TrySendError::Disconnected(_) => break,
                     },
                 };
             })
@@ -80,14 +80,14 @@ where
             while let Ok(data) = convert_receiver.recv() {
                 let converted = converter.convert(data).unwrap();
 
-                for mut data in converted.into_iter() {
+                for mut data in converted {
                     while let Err(err) = write_sender.try_send(data) {
                         match err {
                             TrySendError::Full(returned_data) => {
                                 data = returned_data;
-                                std::thread::yield_now()
+                                std::thread::yield_now();
                             }
-                            _ => break,
+                            TrySendError::Disconnected(_) => break,
                         }
                     }
                 }
@@ -111,7 +111,7 @@ where
 
     read_thread.join().unwrap();
     for thread in convert_threads {
-        thread.join().unwrap()
+        thread.join().unwrap();
     }
     write_thread.join().unwrap();
 }
