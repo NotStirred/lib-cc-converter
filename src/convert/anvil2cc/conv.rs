@@ -6,7 +6,8 @@ use byteorder::{LittleEndian, WriteBytesExt};
 
 use lazy_static::lazy_static;
 
-use crate::convert::anvil2cc::Anvil2CCConversionError::{InvalidData, NbtIo, NbtRepr, NbtStructure, StdIo};
+use crate::convert::anvil2cc::conv::Anvil2CCConversionError::{InvalidData, NbtIo, NbtRepr, NbtStructure, StdIo};
+use crate::convert::converter::{ConversionError, Converter};
 use crate::util::errors::error_from;
 use quartz_nbt::io::NbtIoError;
 use quartz_nbt::NbtTag::{Byte, ByteArray, Compound, Int, IntArray, String};
@@ -16,8 +17,6 @@ use crate::convert::data::anvil::Data;
 use crate::convert::data::cc_1_12::CubicChunks112Data;
 use crate::util::compress::{read_compressed, write_compressed};
 use crate::util::reinterpret::vec_u8_into_i8;
-
-use super::converter::{ConversionError, Converter};
 
 lazy_static! {
     static ref TE_REGISTRY: HashMap<i32, &'static str> = create_te_registry();
