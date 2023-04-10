@@ -78,7 +78,7 @@ impl Key<RegionPos2d> for EntryLocation2d {
     }
 
     fn region_key(&self) -> RegionKey {
-        format!("{}.{}.2dr", self.x, self.z)
+        format!("{}.{}.2dr", self.x >> Self::LOC_BITS, self.z >> Self::LOC_BITS)
     }
 
     fn id(&self) -> usize {
