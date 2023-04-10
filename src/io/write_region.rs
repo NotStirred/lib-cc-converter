@@ -10,7 +10,6 @@ use std::path::{Path, PathBuf};
 
 #[derive(Debug)]
 pub enum RegionWriteError {
-    MissingHeader(PathBuf),
     StdIo(std::io::Error),
 }
 
@@ -26,7 +25,6 @@ impl Display for RegionWriteError {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         match self {
             RegionWriteError::StdIo(err) => f.write_str(&format!("Error when reading region: {err}")),
-            RegionWriteError::MissingHeader(path) => f.write_str(&format!("Missing header in region {path:?}")),
         }
     }
 }

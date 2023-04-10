@@ -20,7 +20,6 @@ pub struct RegionData {
 
 pub struct RegionReader<POS, EXTRACT> {
     region_location: PathBuf,
-
     extract_chunks_function: EXTRACT,
 
     marker_pos: PhantomData<POS>,

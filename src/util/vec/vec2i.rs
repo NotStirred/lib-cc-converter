@@ -3,6 +3,7 @@ use std::fmt::{Display, Formatter};
 use std::hash::{Hash, Hasher};
 use std::marker::PhantomData;
 
+#[derive(Debug)]
 pub struct Vec2i<SPACE: CoordinateSpace> {
     pub x: i32,
     pub z: i32,

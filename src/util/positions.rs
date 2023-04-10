@@ -37,6 +37,7 @@ impl CubePos {
     }
 }
 
+#[derive(Debug)]
 pub struct RegionSpace3d {}
 impl CoordinateSpace for RegionSpace3d {}
 pub type RegionPos3d = Vec3i<RegionSpace3d>;
@@ -74,6 +75,7 @@ impl ChunkPos {
     }
 }
 
+#[derive(Debug)]
 pub struct RegionSpace2d {}
 impl CoordinateSpace for RegionSpace2d {}
 pub type RegionPos2d = Vec2i<RegionSpace2d>;
