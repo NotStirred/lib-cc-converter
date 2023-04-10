@@ -7,7 +7,7 @@ use super::region_reader::{RegionData, RegionReader};
 pub type AnvilRegionReader = RegionReader<RegionPos2d, fn(RegionPos2d, RegionData) -> Vec<Data>>;
 
 pub fn create_anvil_region_reader(path: &Path) -> AnvilRegionReader {
-    RegionReader::new(path, |region_pos, region_data| {
+    RegionReader::new(&path.join("region"), |region_pos, region_data| {
         let mut data_out = Vec::with_capacity(RegionPos2d::CHUNKS_COUNT);
         let data = &region_data.data;
         let indices = &region_data.chunk_indices;
