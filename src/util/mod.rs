@@ -4,6 +4,6 @@ pub mod errors;
 pub mod math_util;
 pub mod positions;
 pub mod reinterpret;
-pub mod vec;
-
+#[cfg(test)]
 pub mod test_utils;
+pub mod vec;
