@@ -1,5 +1,5 @@
 [package]
-name = "cc-converter"
+name = "lib-cc-converter"
 version = "0.1.0"
 edition = "2021"
 
