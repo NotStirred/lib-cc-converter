@@ -6,6 +6,7 @@ edition = "2021"
 [profile.release]
 strip = true
 lto = true
+codegen-units = 1
 
 [dependencies]
 flate2 = { version = "1.0.22", features = ["zlib-ng-compat"], default-features = false }
