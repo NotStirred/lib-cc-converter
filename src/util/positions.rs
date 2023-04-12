@@ -81,7 +81,7 @@ impl CoordinateSpace for RegionSpace2d {}
 pub type RegionPos2d = Vec2i<RegionSpace2d>;
 
 lazy_static! {
-    static ref FORMAT_REGEX: Regex = Regex::new(r"r\.\-?\d*\.\-?\d*\.mca$").unwrap();
+    static ref FORMAT_REGEX_2DR: Regex = Regex::new(r"^r\.\-?\d*\.\-?\d*\.2dr$").unwrap();
 }
 
 impl RegionPos2d {
@@ -96,7 +96,7 @@ impl RegionPos2d {
     }
 
     pub fn is_valid(filename: &str) -> bool {
-        FORMAT_REGEX.is_match(filename)
+        FORMAT_REGEX_2DR.is_match(filename)
     }
 }
 
@@ -114,6 +114,63 @@ impl RegionPos for RegionPos2d {
         if let Ok(x) = x {
             if let Ok(z) = z {
                 return Some(RegionPos2d::new(x, z));
+            }
+        }
+        None
+    }
+
+    fn diameter_in_chunks() -> usize {
+        Self::DIAMETER_IN_CHUNKS
+    }
+
+    fn entries_per_region() -> usize {
+        Self::CHUNKS_COUNT
+    }
+
+    fn region_key(&self) -> RegionKey {
+        format!("{}.{}.2dr", self.x, self.z)
+    }
+}
+
+#[derive(Debug)]
+pub struct MinecraftRegionSpace {}
+impl CoordinateSpace for MinecraftRegionSpace {}
+pub type MinecraftRegionPos = Vec2i<MinecraftRegionSpace>;
+
+lazy_static! {
+    static ref FORMAT_REGEX_MCA: Regex = Regex::new(r"^r\.\-?\d*\.\-?\d*\.mca$").unwrap();
+}
+
+impl MinecraftRegionPos {
+    pub const DIAMETER_IN_CHUNKS: usize = 32;
+    pub const CHUNKS_COUNT: usize = Self::DIAMETER_IN_CHUNKS * Self::DIAMETER_IN_CHUNKS;
+
+    pub fn to_chunk_pos(self) -> ChunkPos {
+        self.to_chunk_pos_offset(0, 0)
+    }
+    pub fn to_chunk_pos_offset(self, local_x: i32, local_z: i32) -> ChunkPos {
+        ChunkPos::new((self.x << 5) + local_x, (self.z << 5) + local_z)
+    }
+
+    pub fn is_valid(filename: &str) -> bool {
+        FORMAT_REGEX_MCA.is_match(filename)
+    }
+}
+
+impl RegionPos for MinecraftRegionPos {
+    fn from_file_name(filename: &str) -> Option<Self> {
+        if !Self::is_valid(filename) {
+            return None;
+        }
+
+        let split: Vec<_> = filename.split('.').collect(); // string is valid, so length is 4
+
+        let x: Result<i32, _> = str::parse(split[1]);
+        let z: Result<i32, _> = str::parse(split[2]);
+
+        if let Ok(x) = x {
+            if let Ok(z) = z {
+                return Some(MinecraftRegionPos::new(x, z));
             }
         }
         None

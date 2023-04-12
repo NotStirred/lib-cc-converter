@@ -1,6 +1,6 @@
 use std::marker::PhantomData;
 
-use crate::util::positions::{RegionPos2d, RegionPos3d};
+use crate::util::positions::{MinecraftRegionPos, RegionPos2d, RegionPos3d};
 use crate::util::vec::vec2i::Vec2i;
 use crate::util::vec::vec3i::Vec3i;
 use crate::util::vec::CoordinateSpace;
@@ -98,6 +98,7 @@ impl MinecraftChunkLocation {
     const LOC_BITS: usize = 5;
     const LOC_BITMASK: usize = (1 << Self::LOC_BITS) - 1;
     pub const ENTRIES_PER_REGION: usize = (1 << Self::LOC_BITS) * (1 << Self::LOC_BITS);
+    pub const SECTOR_SIZE: usize = 4096;
 
     pub fn to_entry_location_2d(self) -> EntryLocation2d {
         EntryLocation2d {
@@ -108,7 +109,7 @@ impl MinecraftChunkLocation {
     }
 }
 
-impl RegionPos2d {
+impl MinecraftRegionPos {
     pub fn to_minecraft_chunk_location(self) -> MinecraftChunkLocation {
         self.to_minecraft_chunk_location_offset(0, 0)
     }
