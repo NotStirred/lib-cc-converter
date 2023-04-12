@@ -7,7 +7,7 @@ use quartz_nbt::{NbtCompound, NbtTag};
 
 use crate::{
     convert::{converter::ConversionError, info_converter::InfoConverter},
-    util::{compress::read_compressed, file::copy_everything_except},
+    util::file::copy_everything_except,
 };
 
 pub struct Anvil2CCLevelInfoConverter<F>
@@ -31,12 +31,14 @@ impl<F: Fn(&Path, &Path) -> bool + Send> Anvil2CCLevelInfoConverter<F> {
 
 impl<F: Fn(&Path, &Path) -> bool + Send> InfoConverter for Anvil2CCLevelInfoConverter<F> {
     fn convert(&self) -> Result<(), ConversionError> {
-        std::fs::create_dir_all(&self.dst_dir)?;;
+        std::fs::create_dir_all(&self.dst_dir)?;
 
         copy_everything_except(&self.src_dir, &self.src_dir, &self.dst_dir, &self.exclude)?;
 
-        copy_any_modify_level_dat(&self.src_dir.join("level.dat"), &self.dst_dir.join("level.dat"))?
-
+        let level_dat_path = self.src_dir.join("level.dat");
+        if level_dat_path.exists() && level_dat_path.is_file() {
+            copy_any_modify_level_dat(&level_dat_path, &self.dst_dir.join("level.dat"))?;
+        }
         Ok(())
     }
 }
