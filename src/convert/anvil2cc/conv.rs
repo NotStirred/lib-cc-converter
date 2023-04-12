@@ -2,7 +2,7 @@ use std::collections::HashMap;
 use std::error::Error;
 use std::fmt::{Debug, Display, Formatter};
 
-use byteorder::{LittleEndian, WriteBytesExt};
+use byteorder::{BigEndian, WriteBytesExt};
 
 use lazy_static::lazy_static;
 
@@ -97,16 +97,20 @@ pub enum Anvil2CCConversionError {
     NbtStructure(NbtStructureError),
     NbtIo(NbtIoError),
     StdIo(std::io::Error),
+    MissingHeightmap,
+    MissingBiomes,
 }
 
 impl Debug for Anvil2CCConversionError {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         match self {
-            InvalidData(err) => f.write_str(&format!("{:?}", err)),
-            NbtRepr(err) => f.write_str(&format!("{:?}", err)),
-            NbtStructure(err) => f.write_str(&format!("{:?}", err)),
-            NbtIo(err) => f.write_str(&format!("{:?}", err)),
-            StdIo(err) => f.write_str(&format!("{:?}", err)),
+            Self::InvalidData(err) => f.write_str(&format!("{:?}", err)),
+            Self::NbtRepr(err) => f.write_str(&format!("{:?}", err)),
+            Self::NbtStructure(err) => f.write_str(&format!("{:?}", err)),
+            Self::NbtIo(err) => f.write_str(&format!("{:?}", err)),
+            Self::StdIo(err) => f.write_str(&format!("{:?}", err)),
+            Self::MissingHeightmap => f.write_str("Chunk missing HeightMap tag"),
+            Self::MissingBiomes => f.write_str("Chunk missing Biomes tag"),
         }
     }
 }
@@ -114,11 +118,13 @@ impl Debug for Anvil2CCConversionError {
 impl Display for Anvil2CCConversionError {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         match self {
-            InvalidData(err) => f.write_str(&format!("{}", err)),
-            NbtRepr(err) => f.write_str(&format!("{}", err)),
-            NbtStructure(err) => f.write_str(&format!("{}", err)),
-            NbtIo(err) => f.write_str(&format!("{}", err)),
-            StdIo(err) => f.write_str(&format!("{}", err)),
+            Self::InvalidData(err) => f.write_str(&format!("{}", err)),
+            Self::NbtRepr(err) => f.write_str(&format!("{}", err)),
+            Self::NbtStructure(err) => f.write_str(&format!("{}", err)),
+            Self::NbtIo(err) => f.write_str(&format!("{}", err)),
+            Self::StdIo(err) => f.write_str(&format!("{}", err)),
+            Self::MissingHeightmap => f.write_str("Chunk missing HeightMap tag"),
+            Self::MissingBiomes => f.write_str("Chunk missing Biomes tag"),
         }
     }
 }
@@ -196,7 +202,13 @@ impl Anvil2CCConverter {
         let mut level = NbtCompound::new();
         let src_level = tag.get::<_, &NbtCompound>("Level")?;
 
-        let src_height_map = Self::fix_heightmap(src_level.get::<_, &Vec<i32>>("HeightMap")?);
+        let src_heightmap_tag: &NbtTag = src_level.get("HeightMap")?;
+        let src_heightmap: Vec<_>;
+        if let IntArray(heightmap) = src_heightmap_tag {
+            src_heightmap = Self::fix_heightmap(heightmap);
+        } else {
+            return Err(Anvil2CCConversionError::MissingHeightmap);
+        }
 
         level.insert("v", Int(1));
 
@@ -209,15 +221,20 @@ impl Anvil2CCConverter {
         level.insert("x", Int(src_level.get::<_, i32>("xPos")?));
         level.insert("z", Int(src_level.get::<_, i32>("zPos")?));
         level.insert("InhabitedTime", Int(src_level.get::<_, i32>("InhabitedTime").unwrap_or(0)));
-        if let Ok(biomes) = src_level.get::<_, &Vec<i32>>("Biomes") {
+
+        let src_biomes_tag: &NbtTag = src_level.get("Biomes")?;
+        if let ByteArray(biomes) = src_biomes_tag {
             level.insert("Biomes", biomes.clone());
+        } else {
+            return Err(Anvil2CCConversionError::MissingBiomes);
         }
-        level.insert("OpacityIndex", ByteArray(Self::make_dummy_opacity_index(&src_height_map)?));
+
+        level.insert("OpacityIndex", ByteArray(Self::make_dummy_opacity_index(&src_heightmap)?));
 
         let mut root = NbtCompound::new();
         root.insert("Level", level);
-        if let Ok(data_version) = tag.get::<_, &i32>("DataVersion") {
-            root.insert("DataVersion", *data_version);
+        if let Ok(data_version) = tag.get::<_, i32>("DataVersion") {
+            root.insert("DataVersion", data_version);
         }
 
         Ok(root)
@@ -236,9 +253,9 @@ impl Anvil2CCConverter {
 
         for entry in height_map {
             // 256 segment arrays
-            out.write_i32::<LittleEndian>(0)?; // minY
-            out.write_i32::<LittleEndian>(*entry)?; // maxY
-            out.write_i16::<LittleEndian>(0)?; // no segments - write zero
+            out.write_i32::<BigEndian>(0)?; // minY
+            out.write_i32::<BigEndian>(*entry)?; // maxY
+            out.write_i16::<BigEndian>(0)?; // no segments - write zero
         }
         Ok(vec_u8_into_i8(out))
     }
@@ -470,7 +487,7 @@ impl Anvil2CCConverter {
     }
 
     fn make_empty_lighting_info() -> NbtCompound {
-        let heightmap = IntArray(Vec::with_capacity(256));
+        let heightmap = IntArray(vec![0; 256]);
         let mut lighting_info = NbtCompound::new();
         lighting_info.insert("LastHeightMap", heightmap);
         lighting_info
@@ -489,10 +506,13 @@ impl Anvil2CCConverter {
     }
 
     fn make_lighting_info(src_level: &NbtCompound) -> Result<NbtCompound, NbtReprError> {
-        let heightmap = src_level.get::<_, &Vec<i32>>("HeightMap")?;
-        let mut lighting_info_map = NbtCompound::new();
-        lighting_info_map.insert("LastHeightMap", heightmap.clone());
-        Ok(lighting_info_map)
+        let heightmap: &NbtTag = src_level.get("HeightMap")?;
+        if let NbtTag::IntArray(heightmap) = heightmap {
+            let mut lighting_info_map = NbtCompound::new();
+            lighting_info_map.insert("LastHeightMap", heightmap.clone());
+            return Ok(lighting_info_map);
+        }
+        Err(NbtReprError::Custom(std::fmt::Error {}.into()))
     }
 
     fn filter_entities(entities: &NbtList, cube_y: i32) -> Result<NbtList, Anvil2CCConversionError> {

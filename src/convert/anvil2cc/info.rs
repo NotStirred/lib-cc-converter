@@ -1,4 +1,7 @@
-use std::path::{Path, PathBuf};
+use std::{
+    io::Cursor,
+    path::{Path, PathBuf},
+};
 
 use quartz_nbt::{NbtCompound, NbtTag};
 
