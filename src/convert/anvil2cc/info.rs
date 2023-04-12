@@ -31,11 +31,11 @@ impl<F: Fn(&Path, &Path) -> bool + Send> Anvil2CCLevelInfoConverter<F> {
 
 impl<F: Fn(&Path, &Path) -> bool + Send> InfoConverter for Anvil2CCLevelInfoConverter<F> {
     fn convert(&self) -> Result<(), ConversionError> {
-        std::fs::create_dir_all(&self.dst_dir)?;
-
-        let _ignored = copy_any_modify_level_dat(&self.src_dir.join("level.dat"), &self.dst_dir.join("level.dat"));
+        std::fs::create_dir_all(&self.dst_dir)?;;
 
         copy_everything_except(&self.src_dir, &self.src_dir, &self.dst_dir, &self.exclude)?;
+
+        copy_any_modify_level_dat(&self.src_dir.join("level.dat"), &self.dst_dir.join("level.dat"))?
 
         Ok(())
     }
