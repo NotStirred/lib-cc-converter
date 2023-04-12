@@ -42,8 +42,8 @@ impl<F: Fn(&Path, &Path) -> bool + Send> InfoConverter for Anvil2CCLevelInfoConv
 }
 
 fn copy_any_modify_level_dat(src: &Path, dst: &Path) -> Result<(), ConversionError> {
-    let data = std::fs::read(src)?;
-    let mut tag = read_compressed(&data)?;
+    let mut data = std::fs::read(src)?;
+    let (mut tag, root_name) = quartz_nbt::io::read_nbt(&mut Cursor::new(&mut data), quartz_nbt::io::Flavor::GzCompressed)?;
 
     let data_tag: &mut NbtCompound = tag.get_mut("Data")?;
 
@@ -56,7 +56,7 @@ fn copy_any_modify_level_dat(src: &Path, dst: &Path) -> Result<(), ConversionErr
     data_tag.insert("isCubicWorld", NbtTag::Byte(1i8));
 
     let mut out_data = Vec::new();
-    quartz_nbt::io::write_nbt(&mut out_data, None, &tag, quartz_nbt::io::Flavor::Uncompressed)?;
+    quartz_nbt::io::write_nbt(&mut out_data, Some(&root_name), &tag, quartz_nbt::io::Flavor::GzCompressed)?;
     std::fs::write(dst, out_data)?;
 
     Ok(())
