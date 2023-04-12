@@ -69,7 +69,7 @@ impl EntryLocation2d {
     const LOC_BITS: usize = 5;
     const LOC_BITMASK: usize = (1 << Self::LOC_BITS) - 1;
     pub const ENTRIES_PER_REGION: usize = (1 << Self::LOC_BITS) * (1 << Self::LOC_BITS);
-    pub const SECTOR_SIZE: usize = 4096;
+    pub const SECTOR_SIZE: usize = 512;
 }
 
 impl Key<RegionPos2d> for EntryLocation2d {
