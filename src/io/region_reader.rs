@@ -18,7 +18,7 @@ pub struct RegionData {
     pub chunk_indices: Vec<Option<(usize, usize)>>,
 }
 
-pub struct RegionReader<POS, EXTRACT> {
+pub struct RegionReader<POS, EXTRACT, const SECTOR_SIZE: usize> {
     region_location: PathBuf,
     extract_chunks_function: EXTRACT,
 
@@ -41,11 +41,10 @@ impl Display for RegionReadError {
     }
 }
 
-impl<POS, F, DATA> RegionReader<POS, F>
+impl<POS, F, DATA, const SECTOR_SIZE: usize> RegionReader<POS, F, SECTOR_SIZE>
 where
     F: Fn(POS, RegionData) -> Vec<DATA>,
 {
-    pub const SECTOR_SIZE: usize = 4096;
     pub const SIZE_BITS: u32 = 8;
     pub const SIZE_MASK: u32 = (1 << Self::SIZE_BITS) - 1;
 
@@ -65,7 +64,7 @@ where
         let region_path = self.region_location.join(region_key);
 
         let bytes = fs::read(region_path)?;
-        if bytes.len() < Self::SECTOR_SIZE {
+        if bytes.len() < SECTOR_SIZE {
             return Err(RegionReadError::MissingHeader);
         }
 
@@ -86,10 +85,10 @@ where
                 continue;
             }
 
-            let byte_offset = offset * Self::SECTOR_SIZE;
+            let byte_offset = offset * SECTOR_SIZE;
 
             let slice_start = byte_offset + 4;
-            let slice_end = byte_offset + (size * Self::SECTOR_SIZE);
+            let slice_end = byte_offset + (size * SECTOR_SIZE);
 
             // if header entry is invalid, set the entry to None
             if slice_start > bytes.len() || slice_end > bytes.len() {
@@ -106,7 +105,7 @@ where
     }
 }
 
-impl<POS, DATA, EXTRACT> Reader<POS, DATA> for RegionReader<POS, EXTRACT>
+impl<POS, DATA, EXTRACT, const SECTOR_SIZE: usize> Reader<POS, DATA> for RegionReader<POS, EXTRACT, SECTOR_SIZE>
 where
     POS: RegionPos + Copy + Send,
     EXTRACT: Fn(POS, RegionData) -> Vec<DATA> + Send,
