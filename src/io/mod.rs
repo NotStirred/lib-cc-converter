@@ -1,6 +1,5 @@
-pub mod anvil_region_reader;
-pub mod anvil_region_writer;
-pub mod cubic_region_writer;
+pub mod anvil;
+pub mod cubic;
 pub mod region_reader;
 pub mod region_writer;
 pub mod write_region;

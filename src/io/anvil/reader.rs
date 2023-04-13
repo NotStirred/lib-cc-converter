@@ -1,8 +1,10 @@
 use std::path::Path;
 
-use crate::{convert::data::anvil::Data, util::positions::MinecraftRegionPos};
-
-use super::region_reader::{RegionData, RegionReader};
+use crate::{
+    convert::data::anvil::Data,
+    io::region_reader::{RegionData, RegionReader},
+    util::positions::MinecraftRegionPos,
+};
 
 const ANVIL_SECTOR_SIZE: usize = 4096;
 

@@ -6,10 +6,9 @@ use crate::{
         data::cc_1_12::CubicChunks112Data,
         entry_location::{EntryLocation2d, EntryLocation3d},
     },
+    io::region_writer::CachingRegionWriter,
     util::positions::{RegionPos2d, RegionPos3d},
 };
-
-use super::region_writer::CachingRegionWriter;
 
 pub struct CubicRegionWriter {
     inner_2d: CachingRegionWriter<RegionPos2d>,

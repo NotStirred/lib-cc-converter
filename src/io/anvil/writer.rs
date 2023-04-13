@@ -6,10 +6,9 @@ use crate::{
         data::anvil::Data,
         entry_location::EntryLocation2d,
     },
+    io::region_writer::CachingRegionWriter,
     util::positions::RegionPos2d,
 };
-
-use super::region_writer::CachingRegionWriter;
 
 pub struct AnvilRegionWriter {
     inner: CachingRegionWriter<RegionPos2d>,

@@ -5,7 +5,7 @@ use convert::{
     run_conversion,
     waiter::ConverterWaiter,
 };
-use io::{anvil_region_reader::create_anvil_region_reader, cubic_region_writer::CubicRegionWriter};
+use io::{anvil::reader::create_anvil_region_reader, cubic::writer::CubicRegionWriter};
 
 mod convert;
 mod dimension;
