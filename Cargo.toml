@@ -8,6 +8,11 @@ strip = true
 lto = true
 codegen-units = 1
 
+[profile.release-with-debug]
+inherits = "release"
+debug = true
+strip = false
+
 [dependencies]
 flate2 = { version = "1.0.22", features = ["zlib-ng-compat"], default-features = false }
 quartz_nbt = { version = "0.2.5" }
