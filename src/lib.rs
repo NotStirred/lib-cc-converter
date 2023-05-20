@@ -4,6 +4,7 @@ use convert::{
     anvil2cc::{conv::Anvil2CCConverter, info::Anvil2CCLevelInfoConverter},
     run_conversion,
     waiter::ConverterWaiter,
+    ConverterCreateCtx,
 };
 use io::{anvil::reader::create_anvil_region_reader, cubic::writer::CubicRegionWriter};
 
@@ -35,7 +36,13 @@ pub fn anvil2cc(src_path: &Path, dst_path: &Path, config: Anvil2CCConfig) -> Res
         false
     });
 
-    let waiter = run_conversion(reader, converter, info_converter, writer);
+    let waiter = run_conversion(
+        ConverterCreateCtx { ..Default::default() },
+        reader,
+        converter,
+        info_converter,
+        writer,
+    );
     Ok(waiter)
 }
 

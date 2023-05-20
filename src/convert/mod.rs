@@ -20,7 +20,23 @@ pub mod entry_location;
 pub mod info_converter;
 pub mod waiter;
 
+#[derive(Copy, Clone, Debug)]
+pub struct ConverterCreateCtx {
+    pub convert_queue_size: usize,
+    pub write_queue_size: usize,
+}
+
+impl Default for ConverterCreateCtx {
+    fn default() -> Self {
+        Self {
+            convert_queue_size: 1024,
+            write_queue_size: 4096,
+        }
+    }
+}
+
 pub fn run_conversion<KEY, IN, OUT, READ, CONVERT, INFO, WRITE>(
+    ctx: ConverterCreateCtx,
     mut reader: READ,
     converter: CONVERT,
     info_converter: INFO,
@@ -38,8 +54,8 @@ where
     let convert_queue_fill = Arc::new(AtomicUsize::new(0));
     let write_queue_fill = Arc::new(AtomicUsize::new(0));
 
-    let (convert_sender, convert_receiver) = multiqueue::mpmc_queue(64);
-    let (write_sender, write_receiver) = multiqueue::mpmc_queue(64);
+    let (convert_sender, convert_receiver) = multiqueue::mpmc_queue(ctx.convert_queue_size.try_into().unwrap());
+    let (write_sender, write_receiver) = multiqueue::mpmc_queue(ctx.write_queue_size.try_into().unwrap());
 
     let tasks_fill = tasks_sent.clone();
     let convert_fill = convert_queue_fill.clone();
@@ -128,6 +144,8 @@ where
         write_thread,
         tasks_sent,
         convert_queue_fill,
+        convert_queue_size: ctx.convert_queue_size,
         write_queue_fill,
+        write_queue_size: ctx.write_queue_size,
     }
 }

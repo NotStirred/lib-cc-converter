@@ -26,7 +26,9 @@ pub struct ConverterWaiter {
 
     pub tasks_sent: Arc<AtomicUsize>,
     pub convert_queue_fill: Arc<AtomicUsize>,
+    pub convert_queue_size: usize,
     pub write_queue_fill: Arc<AtomicUsize>,
+    pub write_queue_size: usize,
 }
 
 impl ConverterWaiter {
