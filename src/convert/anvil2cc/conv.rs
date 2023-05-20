@@ -401,55 +401,55 @@ impl Anvil2CCConverter {
         tile_entities: NbtList,
         section: &NbtCompound,
     ) -> Result<NbtList, Anvil2CCConversionError> {
-        if !section.contains_key("Blocks") {
-            return Ok(tile_entities);
-        }
+        return match section.get::<_, &[i8]>("Blocks") {
+            Err(_) => Ok(tile_entities),
+            Ok(blocks) => {
+                let add: Option<&[i8]> = section.get("Add").ok();
+                let add2neid: Option<&[i8]> = section.get("Add2").ok();
 
-        let blocks = section.get::<_, &[i8]>("Blocks")?;
-        let add = section.get::<_, &[i8]>("Add").ok();
-        let add2neid = section.get::<_, &[i8]>("Add2").ok();
+                let mut te_map: HashMap<i32, NbtCompound> = HashMap::new();
+                for tag in tile_entities {
+                    let te: NbtCompound = tag.try_into()?;
+                    let x: i32 = te.get("x").unwrap_or(0);
+                    let y: i32 = te.get("y").unwrap_or(0);
+                    let z: i32 = te.get("z").unwrap_or(0);
+                    let idx = y & 0xF << 8 | z & 0xF << 4 | x & 0xF;
+                    te_map.insert(idx, te);
+                }
+                for i in 0..4096 {
+                    let x = i & 15;
+                    let y = i >> 8 & 15;
+                    let z = i >> 4 & 15;
 
-        let mut te_map: HashMap<i32, NbtCompound> = HashMap::new();
-        for tag in tile_entities {
-            let te: NbtCompound = tag.try_into()?;
-            let x = te.get::<_, i32>("x").unwrap_or(0);
-            let y = te.get::<_, i32>("y").unwrap_or(0);
-            let z = te.get::<_, i32>("z").unwrap_or(0);
-            let idx = y & 0xF << 8 | z & 0xF << 4 | x & 0xF;
-            te_map.insert(idx, te);
-        }
-        for i in 0..4096 {
-            let x = i & 15;
-            let y = i >> 8 & 15;
-            let z = i >> 4 & 15;
+                    let mut to_add = if let Some(add) = add { Self::get_nibble(add, i) } else { 0 };
 
-            let mut to_add = if let Some(add) = add { Self::get_nibble(add, i) } else { 0 };
+                    let asd = if let Some(add2neid) = add2neid {
+                        Self::get_nibble(add2neid, i) << 4
+                    } else {
+                        0
+                    };
+                    to_add = (to_add & 0xF) | asd;
 
-            let asd = if let Some(add2neid) = add2neid {
-                Self::get_nibble(add2neid, i) << 4
-            } else {
-                0
-            };
-            to_add = (to_add & 0xF) | asd;
-
-            let id = (to_add << 8) | blocks[i as usize] as i32;
-            let te_id = TE_REGISTRY.get(&id);
-            if let Some(te_id) = te_id {
-                te_map.entry(i).or_insert_with(|| {
-                    let mut tag = NbtCompound::new();
-                    tag.insert("id", String(te_id.to_string()));
-                    tag.insert("x", Int(cube_x * 16 + x));
-                    tag.insert("y", Int(cube_y * 16 + y));
-                    tag.insert("z", Int(cube_z * 16 + z));
-                    tag
+                    let id = (to_add << 8) | blocks[i as usize] as i32;
+                    let te_id = TE_REGISTRY.get(&id);
+                    if let Some(te_id) = te_id {
+                        te_map.entry(i).or_insert_with(|| {
+                            let mut tag = NbtCompound::new();
+                            tag.insert("id", String(te_id.to_string()));
+                            tag.insert("x", Int(cube_x * 16 + x));
+                            tag.insert("y", Int(cube_y * 16 + y));
+                            tag.insert("z", Int(cube_z * 16 + z));
+                            tag
+                        });
+                    }
+                }
+                let mut tile_entities_list = NbtList::new();
+                te_map.drain().for_each(|(_, value)| {
+                    tile_entities_list.push(Compound(value));
                 });
+                Ok(tile_entities_list)
             }
-        }
-        let mut tile_entities_list = NbtList::new();
-        te_map.drain().for_each(|(_, value)| {
-            tile_entities_list.push(Compound(value));
-        });
-        Ok(tile_entities_list)
+        };
     }
 
     fn get_nibble(array: &[i8], i: i32) -> i32 {
