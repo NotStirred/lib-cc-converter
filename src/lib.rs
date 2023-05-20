@@ -15,6 +15,7 @@ mod util;
 
 pub struct Anvil2CCConfig {
     pub fix_missing_tile_entities: bool,
+    pub ctx: ConverterCreateCtx,
 }
 
 pub fn anvil2cc(src_path: &Path, dst_path: &Path, config: Anvil2CCConfig) -> Result<ConverterWaiter, std::io::Error> {
@@ -36,13 +37,7 @@ pub fn anvil2cc(src_path: &Path, dst_path: &Path, config: Anvil2CCConfig) -> Res
         false
     });
 
-    let waiter = run_conversion(
-        ConverterCreateCtx { ..Default::default() },
-        reader,
-        converter,
-        info_converter,
-        writer,
-    );
+    let waiter = run_conversion(config.ctx, reader, converter, info_converter, writer);
     Ok(waiter)
 }
 
@@ -62,6 +57,7 @@ mod tests {
             &dst_path,
             crate::Anvil2CCConfig {
                 fix_missing_tile_entities: true,
+                ctx: Default::default(),
             },
         )
         .unwrap();
